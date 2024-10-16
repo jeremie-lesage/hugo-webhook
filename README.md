@@ -94,7 +94,7 @@ Use this helm chart:
 docker tag jeci/hugo-webhook rg.fr-par.scw.cloud/jeci/hugo-webhook:0.1.0
 docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:0.1.0
 
-$ helm repo add jeci https://jeci/charts/
+$ helm repo add jeci https://jeci.fr/helm-charts/
 $ helm install jeci/hugo-webhook --set -e GIT_TOKEN=xxxxxredactedyyyyyyyzzzzzz \
   --set GIT_REPO_URL=github.com/username/hugo-site.git
 ```

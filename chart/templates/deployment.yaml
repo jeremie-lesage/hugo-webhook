@@ -34,7 +34,7 @@ spec:
       initContainers:
         - name: "{{ .Chart.Name }}-init"    
           image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"  
-          command: ["/scripts/refresh.sh"]
+          command: ["/var/scripts/refresh.py"]
           env:
           - name: GIT_PROVIDER
             value: "{{ .Values.git.provider }}"
@@ -59,6 +59,8 @@ spec:
             value: "{{  .Values.hugo.targetDir }}"
           - name: HUGO_PARAMS
             value: "{{  .Values.hugo.params }}"
+          - name: PROJECT_TYPE
+            value: "hugo"
           volumeMounts:
           - name: html
             mountPath: "{{ .Values.ephemeral.mountTo}}"
@@ -114,6 +116,8 @@ spec:
             value: "{{  .Values.hugo.targetDir }}"
           - name: HUGO_PARAMS
             value: "{{  .Values.hugo.params }}"
+          - name: PROJECT_TYPE
+            value: "{{ .Values.git.projectType }}"
           ports:
           - containerPort: 9000
           volumeMounts:
