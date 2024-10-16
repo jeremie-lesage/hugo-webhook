@@ -1,0 +1,59 @@
+replicaCount: 1
+
+image:
+  nginxRepository: nginx #Nginx image
+  nginxVersion: latest #image tag for the nginx image
+  hookRepository: quay.io/jfardello/hugo-webhook #webhook docker file 
+  hookRepositoryVersion: latest #image tag for the webhook image
+  pullPolicy: IfNotPresent
+
+git:
+  privateKey: "Zm9vZGF0YQo=" #The ssh private key in order to git pull/clone when using ssh transport  
+  provider: "GITHUB" #When using http trasport, the git provider, GITHUB, GITLAB, or GITEA.
+  transport: "HTTP" #HTTP or SSH
+  token: "sampletoken" #This is the web token when using HTTP transport 
+  username: "sampleuser" #Username when using HTTP and a token. (GITEA, and GITLAB needs this.)
+  http_insecure: "FALSE" #Nasy setting, dont try this unless you're pretty sure of it.
+  repoUrl: github.com/jfardello/hugo-webhook #This is the repo url, nothe that there is no schema. 
+  repoContentPath: "sample/site" #Hugo will CWD here before build.
+  repoBranch: "master" #Branch that will be pulled/cloned.
+  cloneDest: "/srv/src" #Destination of the source files.
+  preserveSrc: "TRUE" #Preserve src, succesive hook calls will pull instead of clone.
+
+ephemeral:
+  mountTo: /srv #Where to mount the ephemeral hostPath.
+
+hugo:
+  targetDir: /srv/static #Destination of the html site.
+  params: --minify #Extra params passed to the hugo build. 
+  
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name:
+
+podSecurityContext: {}
+securityContext: {}
+service:
+  type: ClusterIP
+  port: 80
+  hookPort: 9000
+ingress:
+  traefikTls: false
+  enabled: false
+  annotations: {}
+  hosts:
+    - host: chart-example.local
+  tls: []
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}

@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: hooks-config
+data:
+  hooks.json: |-
+    [
+      {
+        "id": "refresh-{{ include "hugo-webhook.randnum" . }}",
+        "execute-command": "/scripts/refresh.sh",
+        "command-working-directory": "/tmp"
+      }
+    ]

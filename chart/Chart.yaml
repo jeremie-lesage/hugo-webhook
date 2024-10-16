@@ -1,0 +1,6 @@
+apiVersion: v2
+name: hugo-webhook
+description: Deploys a webhook that builds Hugo sites from git sources.
+type: application
+version: 0.1.0
+appVersion: 0.80.0-2.8.0

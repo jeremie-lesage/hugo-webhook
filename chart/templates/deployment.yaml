@@ -1,0 +1,137 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "hugo-webhook.fullname" . }}
+  labels:
+    {{- include "hugo-webhook.labels" . | nindent 4 }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      {{- include "hugo-webhook.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "hugo-webhook.selectorLabels" . | nindent 8 }}
+    spec:
+    {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      serviceAccountName: {{ include "hugo-webhook.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      volumes:
+      - name: webhook-ssh-auth
+        secret:
+          secretName: webhook-ssh-auth
+          defaultMode: 256              # = mode 0400
+      - name: html
+        emptyDir: {}
+      - name: hooks-config
+        configMap:
+          name: hooks-config
+      initContainers:
+        - name: "{{ .Chart.Name }}-init"    
+          image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"  
+          command: ["/scripts/refresh.sh"]
+          env:
+          - name: GIT_PROVIDER
+            value: "{{ .Values.git.provider }}"
+          - name: GIT_TRANSPORT
+            value: "{{ .Values.git.transport }}"
+          - name: GIT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: webhook-token
+                key: token
+          - name: GIT_REPO_BRANCH
+            value: "{{ .Values.git.repoBranch }}"
+          - name: GIT_REPO_URL
+            value: "{{ .Values.git.repoUrl }}"
+          - name: GIT_REPO_CONTENT_PATH
+            value: "{{ .Values.git.repoContentPath }}"
+          - name: GIT_CLONE_DEST
+            value: "{{ .Values.git.cloneDest }}"
+          - name: GIT_PRESERVE_SRC
+            value: "{{ .Values.git.preserveSrc }}"
+          - name: HUGO_TARGET_DIR
+            value: "{{  .Values.hugo.targetDir }}"
+          - name: HUGO_PARAMS
+            value: "{{  .Values.hugo.params }}"
+          volumeMounts:
+          - name: html
+            mountPath: "{{ .Values.ephemeral.mountTo}}"
+          - name: webhook-ssh-auth
+            mountPath: /ssh
+      containers:
+        - name: "{{ .Chart.Name }}-web"
+          volumeMounts:
+          - name: html
+            mountPath: /usr/share/nginx/html
+            subPath: static
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.nginxRepository }}:{{ .Values.image.nginxVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        - name: "{{ .Chart.Name }}-hook"    
+          image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"
+          env:
+          - name: GIT_PROVIDER
+            value: "{{ .Values.git.provider }}"
+          - name: GIT_TRANSPORT
+            value: "{{ .Values.git.transport }}"
+          - name: GIT_TOKEN
+            valueFrom:
+              secretKeyRef:
+                name: webhook-token
+                key: token
+          - name: GIT_REPO_BRANCH
+            value: "{{ .Values.git.repoBranch }}"
+          - name: GIT_REPO_URL
+            value: "{{ .Values.git.repoUrl }}"
+          - name: GIT_REPO_CONTENT_PATH
+            value: "{{ .Values.git.repoContentPath }}"
+          - name: GIT_CLONE_DEST
+            value: "{{ .Values.git.cloneDest }}"
+          - name: GIT_PRESERVE_SRC
+            value: "{{ .Values.git.preserveSrc }}"
+          - name: HUGO_TARGET_DIR
+            value: "{{  .Values.hugo.targetDir }}"
+          - name: HUGO_PARAMS
+            value: "{{  .Values.hugo.params }}"
+          ports:
+          - containerPort: 9000
+          volumeMounts:
+          - name: hooks-config
+            mountPath: /etc/webhook
+          - name: html
+            mountPath: "{{ .Values.ephemeral.mountTo}}"
+          - name: webhook-ssh-auth
+            mountPath: /ssh
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+    {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+    {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}

@@ -1,0 +1,27 @@
+1. hugo-webhook has been deployed:
+
+{{- if or (eq .Values.ingress.enabled true) (eq .Values.ingress.traefikTls true ) }}
+{{- range $host := .Values.ingress.hosts }}
+  Access the site at:
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}
+
+  You can force an hugo build with:
+  curl http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}/hooks/refresh-{{ include "hugo-webhook.randnum" . }}
+{{- end }}
+{{- else }}
+
+  
+
+  Access the built site:
+  $ kubectl port-forward svc/docs-hugo-webhook 8080:8080 -n {{ .Release.Namespace }}
+
+  $ http://localhost:8080
+
+  You can force an hugo build with:
+  
+  $ kubectl port-forward svc/docs-hugo-webhook 9000:9000 -n {{ .Release.Namespace }}
+
+  $ curl localhost:8080/hooks/refresh-{{ include "hugo-webhook.randnum" . }}
+
+  
+{{- end }}
