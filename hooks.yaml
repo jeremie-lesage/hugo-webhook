@@ -1,0 +1,17 @@
+- id: refresh
+  execute-command: "/var/scripts/refresh.py"
+  command-working-directory: "/tmp"
+- id: hugo
+  execute-command: "/var/scripts/refresh.py"
+  command-working-directory: "/tmp"
+  pass-environment-to-command:
+      -  source: "string"
+         envname: "PROJECT_TYPE"
+         name: "hugo"
+- id: mkdocs
+  execute-command: "/var/scripts/refresh.py"
+  command-working-directory: "/tmp"
+  pass-environment-to-command:
+      -  source: "string"
+         envname: "PROJECT_TYPE"
+         name: "mkdocs"

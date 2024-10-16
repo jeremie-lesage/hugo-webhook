@@ -1,7 +1,0 @@
-[
-  {
-    "id": "refresh",
-    "execute-command": "/scripts/refresh.sh",
-    "command-working-directory": "/tmp"
-  }
-]
