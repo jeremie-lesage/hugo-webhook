@@ -33,7 +33,8 @@ spec:
           name: hooks-config
       initContainers:
         - name: "{{ .Chart.Name }}-init"    
-          image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"  
+          image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["/var/scripts/refresh.py"]
           env:
           - name: GIT_PROVIDER
@@ -55,12 +56,14 @@ spec:
             value: "{{ .Values.git.cloneDest }}"
           - name: GIT_PRESERVE_SRC
             value: "{{ .Values.git.preserveSrc }}"
-          - name: HUGO_TARGET_DIR
+          - name: TARGET_DIR
             value: "{{  .Values.hugo.targetDir }}"
           - name: HUGO_PARAMS
             value: "{{  .Values.hugo.params }}"
+          - name: MKDOCS_PARAMS
+            value: "{{  .Values.mkdocs.params }}"
           - name: PROJECT_TYPE
-            value: "hugo"
+            value: "{{ .Values.git.projectType }}"
           volumeMounts:
           - name: html
             mountPath: "{{ .Values.ephemeral.mountTo}}"
@@ -92,6 +95,7 @@ spec:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: "{{ .Chart.Name }}-hook"    
           image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
           - name: GIT_PROVIDER
             value: "{{ .Values.git.provider }}"
@@ -112,10 +116,12 @@ spec:
             value: "{{ .Values.git.cloneDest }}"
           - name: GIT_PRESERVE_SRC
             value: "{{ .Values.git.preserveSrc }}"
-          - name: HUGO_TARGET_DIR
-            value: "{{  .Values.hugo.targetDir }}"
+          - name: TARGET_DIR
+            value: "{{  .Values.git.targetDir }}"
           - name: HUGO_PARAMS
             value: "{{  .Values.hugo.params }}"
+          - name: MKDOCS_PARAMS
+            value: "{{  .Values.mkdocs.params }}"
           - name: PROJECT_TYPE
             value: "{{ .Values.git.projectType }}"
           ports:

@@ -38,10 +38,10 @@ git:
   repoContentPath: "ktdocs"
   repoBranch: "master"
   cloneDest: "/srv/src"
+  target_dir: "/srv/static"
   preserveSrc: "TRUE"
 
 hugo:
-  target_dir: /srv/static
   params: --minify
 
 ingress:

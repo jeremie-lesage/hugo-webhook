@@ -12,9 +12,9 @@ ENV TARGET_DIR=/srv/static
 
 RUN addgroup -S app && \
     adduser -S -G app app  && \
-    mkdir -p ${TARGET_DIR} ${GIT_CLONE_DEST} /etc/webhook/ && \
-    chown app:app ${TARGET_DIR} ${GIT_CLONE_DEST} /etc/webhook/  && \
-    chmod 755 ${TARGET_DIR} ${GIT_CLONE_DEST} /etc/webhook/ && \
+    mkdir -p  /etc/webhook/ && \
+    chown app:app /etc/webhook/  && \
+    chmod 755 /etc/webhook/ && \
     apk add --update --no-cache \
         go \
         bash \
@@ -25,7 +25,6 @@ RUN addgroup -S app && \
         mkdocs \
         py3-regex
 
-
 ENV HOME=/home/app
 
 RUN --mount=type=cache,target=$HOME/go/pkg/mod \
@@ -34,7 +33,7 @@ RUN --mount=type=cache,target=$HOME/go/pkg/mod \
 
 USER app
 
-WORKDIR ${GIT_CLONE_DEST}
+WORKDIR /srv
 
 EXPOSE 9000
 EXPOSE 80

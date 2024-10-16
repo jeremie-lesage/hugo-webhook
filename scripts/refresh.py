@@ -59,6 +59,7 @@ def main():
     GIT_REPO_CONTENT_PATH = os.getenv('GIT_REPO_CONTENT_PATH')
     TARGET_DIR = os.getenv('TARGET_DIR')
     HUGO_PARAMS = os.getenv('HUGO_PARAMS', '')
+    MKDOCS_PARAMS = os.getenv('MKDOCS_PARAMS', '')
     GIT_PRESERVE_SRC = os.getenv('GIT_PRESERVE_SRC', 'FALSE')
     PROJECT_TYPE = os.getenv('PROJECT_TYPE', 'hugo')
 
@@ -95,7 +96,7 @@ def main():
         hugo_command = f"hugo --destination {TARGET_DIR} {HUGO_PARAMS}"
         run_command(hugo_command, cwd=os.path.join(clone_dir, GIT_REPO_CONTENT_PATH))
     elif PROJECT_TYPE == "mkdocs":
-        mkdocs_command = f"mkdocs build --site-dir {TARGET_DIR} {HUGO_PARAMS}"
+        mkdocs_command = f"mkdocs build --site-dir {TARGET_DIR} {MKDOCS_PARAMS}"
         run_command(mkdocs_command, cwd=os.path.join(clone_dir, GIT_REPO_CONTENT_PATH))
     else:
         print("Unsupported project type!")

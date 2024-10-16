@@ -2,5 +2,5 @@ apiVersion: v2
 name: hugo-webhook
 description: Deploys a webhook that builds Hugo (or mkdocs) sites from git sources.
 type: application
-version: 0.1.0
-appVersion: 0.1.0
+version: 0.1.1
+appVersion: 0.1.1
