@@ -35,21 +35,21 @@ version is 0.80.0.
 
 ### Environment variables
 
-| Name               | Description                                                                                         |
-|--------------------|-----------------------------------------------------------------------------------------------------|
-| `GIT_PROVIDER`     | Your git provider (GITHUB                                                                           |GITEA|GITLAB), defaults to GITHUB, only used if TRANSPORT is HTTP.       |
-| `GIT_TRANSPORT`    | Whether to use SSH or HTTP git transport, defaults to HTTP.                                         |
-| `GIT_TOKEN`        | A gitlab, geta, or github token for authorizing th git pull over http.                              |
-| `GIT_USERNAME`     | When using webtockens and GITEA, the tokens' owner username.                                        |
-| `GIT_HTTP_INSECURE` | Force clear http as transport. (A nasty thing, you know what you're doing).                         |
-| `GIT_REPO_URL`     | The URL of the git repository.                                                                      |
+| Name                    | Description                                                                                         |
+|-------------------------|-----------------------------------------------------------------------------------------------------|
+| `GIT_PROVIDER`          | Your git provider (GITHUB                                                                           |GITEA|GITLAB), defaults to GITHUB, only used if TRANSPORT is HTTP.       |
+| `GIT_TRANSPORT`         | Whether to use SSH or HTTP git transport, defaults to HTTP.                                         |
+| `GIT_TOKEN`             | A gitlab, geta, or github token for authorizing th git pull over http.                              |
+| `GIT_USERNAME`          | When using webtockens and GITEA, the tokens' owner username.                                        |
+| `GIT_HTTP_INSECURE`     | Force clear http as transport. (A nasty thing, you know what you're doing).                         |
+| `GIT_REPO_URL`          | The URL of the git repository.                                                                      |
 | `GIT_REPO_CONTENT_PATH` | The subpath of the repository holding the hugo source files (e.g., where `config.toml` is located). |
-| `GIT_REPO_BRANCH`  | The branch of the git repository.                                                                   |
-| `GIT_CLONE_DEST`   | Where to clone the repo to, defaults to /srv/src                                                    |
-| `GIT_PRESERVE_SRC` | Whether to preserve(cache) the src upon build or not. "TRUE" or "FALSE", default to FALSE           |
-| `TARGET_DIR`       | Where to save hugo's built html, defaults to /srv/static                                            |
-| `HUGO_PARAMS`      | Additional HUGO parameter (e.g., `--minify`).                                                       |
-| `MKDOCS_PARAMS`    | Additional MKDOCS parameter (e.g., `--theme material`).                                             |
+| `GIT_REPO_BRANCH`       | The branch of the git repository.                                                                   |
+| `GIT_CLONE_DEST`        | Where to clone the repo to, defaults to /srv/src                                                    |
+| `GIT_PRESERVE_SRC`      | Whether to preserve(cache) the src upon build or not. "TRUE" or "FALSE", default to FALSE           |
+| `TARGET_DIR`            | Where to save hugo's built html, defaults to /srv/static                                            |
+| `HUGO_PARAMS`           | Additional HUGO parameter (e.g., `--minify`).                                                       |
+| `MKDOCS_PARAMS`         | Additional MKDOCS parameter (e.g., `--theme material`).                                             |
 
 ### Volumes and configuration files
 
