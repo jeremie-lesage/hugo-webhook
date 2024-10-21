@@ -65,11 +65,11 @@ spec:
             - name: GIT_PRESERVE_SRC
               value: "{{ .Values.git.preserveSrc }}"
             - name: TARGET_DIR
-              value: "{{  .Values.hugo.targetDir }}"
+              value: "{{  .Values.target.baseDir }}{{  .Values.target.baseUrl }}"
             - name: HUGO_PARAMS
-              value: "{{  .Values.hugo.params }}"
+              value: "{{  .Values.target.params }}"
             - name: MKDOCS_PARAMS
-              value: "{{  .Values.mkdocs.params }}"
+              value: "{{  .Values.target.params }}"
             - name: PROJECT_TYPE
               value: "{{ .Values.git.projectType }}"
           volumeMounts:
@@ -95,11 +95,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /{{ .Values.target.baseUrl }}
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /{{ .Values.target.baseUrl }}
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
@@ -127,11 +127,11 @@ spec:
             - name: GIT_PRESERVE_SRC
               value: "{{ .Values.git.preserveSrc }}"
             - name: TARGET_DIR
-              value: "{{  .Values.git.targetDir }}"
+              value: "{{  .Values.target.baseDir }}{{  .Values.target.baseUrl }}"
             - name: HUGO_PARAMS
-              value: "{{  .Values.hugo.params }}"
+              value: "{{  .Values.target.params }}"
             - name: MKDOCS_PARAMS
-              value: "{{  .Values.mkdocs.params }}"
+              value: "{{  .Values.target.params }}"
             - name: PROJECT_TYPE
               value: "{{ .Values.git.projectType }}"
           ports:
