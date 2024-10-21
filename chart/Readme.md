@@ -84,8 +84,9 @@ The following table lists the configurable parameters of the Hugo-webhook chart 
 | `git.cloneDest`                   | Destination of the source files.                                          | `"/srv/src"`                          |
 | `git.preserveSrc`                 | Preserve src, successive hook calls will pull instead of clone.           | `"TRUE"`                              |
 | `ephemeral.mountTo`               | Where to mount the ephemeral hostpath.                                    | `"/srv"`                              |
-| `hugo.targetDir`                  | Destination of the html site.                                             | `"/srv/static"`                       |
-| `hugo.params`                     | Extra params passed to the hugo build.                                    | `"--minify"`                          |
+| `target.baseUrl`                  | Base Url of the target site.                                              | `"/"`                                 |
+| `target.baseDir`                  | Destination of the html site (plus baseUrl for mkDocs).                   | `"/srv/static"`                       |
+| `target.params`                   | Extra params passed to the hugo build.                                    | `"--minify"`                          |
 | `imagePullSecrets`                |                                                                           | `[]`                                  |
 | `nameOverride`                    |                                                                           | `""`                                  |
 | `fullnameOverride`                |                                                                           | `""`                                  |

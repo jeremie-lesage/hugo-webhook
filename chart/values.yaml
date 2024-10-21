@@ -44,9 +44,9 @@ ephemeral:
   mountTo: /srv
 
 target:
-  ## Destination of the html site.
-  baseUrl: /pristy-documentation
-  ## Destination of the html site.
+  ## Base Url of the target site.
+  baseUrl: /
+  ## Destination of the html site (plus baseUrl for mkDocs).
   baseDir: /srv/static
   ## Extra params passed to the hugo/mkdocs build.
   params: ""
