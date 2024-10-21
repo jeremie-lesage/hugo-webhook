@@ -1,17 +1,15 @@
-
 # Hugo-webhook
 
 ## Introduction
 
-This chart deploys a webhook that builds Hugo sites (or Mkdocs) from git sources and hosts the generated site with an nginx container on the same pod.
+This chart deploys a webhook that builds Hugo sites (or Mkdocs) from git sources and hosts the generated site with an
+nginx container on the same pod.
 It supports git clone/pull via http with web tokens as well as via ssh with certificates.
-
-
 
 ## Prerequisites
 
-* A kubernetes cluster >=1.14 
-* The helm client 
+* A kubernetes cluster >=1.14
+* The helm client
 
 # Installing the chart
 
@@ -25,9 +23,13 @@ Then install the release:
 
 Now if you provided an ingress you should call https://ingress.tld/hooks/refresh to build the site
 
- > :warning: **The sample webhook deployed is public and not secured**, anyone having access to the URL will be able to  trigger builds, its up to you to secure it by editing the rules configmap, [by looking for a github/gitlab known secret](https://github.com/adnanh/webhook/blob/master/docs/Hook-Examples.md).  
+> :warning: **The sample webhook deployed is public and not secured**, anyone having access to the URL will be able to
+> trigger builds, its up to you to secure it by editing the rules
+>
+configmap, [by looking for a github/gitlab known secret](https://github.com/adnanh/webhook/blob/master/docs/Hook-Examples.md).
 
 Sample config for a traefik ingres:
+
 ```yaml
 git:
   provider: "GITEA"
@@ -55,9 +57,6 @@ ingress:
   hosts:
     - host: docs.kubewire.net
 ```
-
-
-
 
 ## Configuration
 

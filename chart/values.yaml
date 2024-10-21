@@ -1,46 +1,65 @@
 replicaCount: 1
 
 image:
-  nginxRepository: nginx #Nginx image
-  nginxVersion: latest #image tag for the nginx image
-  hookRepository: rg.fr-par.scw.cloud/jeci/hugo-webhook #webhook docker file
-  hookRepositoryVersion: 0.1.0 #image tag for the webhook image
+  ## Nginx image
+  nginxRepository: nginx
+  ## image tag for the nginx image
+  nginxVersion: latest
+  ## webhook docker file
+  hookRepository: rg.fr-par.scw.cloud/jeci/hugo-webhook
+  ## image tag for the webhook image
+  hookRepositoryVersion: 0.1.0
   pullPolicy: IfNotPresent
 
 git:
   privateKey: "" #The ssh private key in order to git pull/clone when using ssh transport
-  provider: "PUBLIC" #When using http transport, the git provider, GITHUB, GITLAB, or GITEA.
-  transport: "HTTP" #HTTP or SSH
-  token: "" #This is the web token when using HTTP transport
-  username: "" #Username when using HTTP and a token. (GITEA, and GITLAB needs this.)
-  http_insecure: "FALSE" #Nasy setting, dont try this unless you're pretty sure of it.
-  repoUrl: github.com/jfardello/hugo-webhook #This is the repo url, note that there is no schema.
-  repoContentPath: "" #Hugo will CWD here before build.
-  repoBranch: "master" #Branch that will be pulled/cloned.
-  cloneDest: "/srv/src" #Destination of the source files.
-  preserveSrc: "TRUE" #Preserve src, succesive hook calls will pull instead of clone.
-  projectType: "hugo" # hugo or mkdocs
-  targetDir: /srv/static #Destination of the html site.
+  ## When using http transport, the git provider, GITHUB, GITLAB, or GITEA.
+  provider: "PUBLIC"
+  ## HTTP or SSH
+  transport: "HTTP"
+  ## This is the web token when using HTTP transport
+  token: ""
+  ## Username when using HTTP and a token. (GITEA, and GITLAB needs this.)
+  username: ""
+  ## Nasy setting, dont try this unless you're pretty sure of it.
+  http_insecure: "FALSE"
+  ## This is the repo url, note that there is no schema.
+  repoUrl: github.com/jfardello/hugo-webhook
+  ## Hugo will CWD here before build.
+  repoContentPath: ""
+  ## Branch that will be pulled/cloned.
+  repoBranch: "master"
+  ## Destination of the source files.
+  cloneDest: "/srv/src"
+  ## Preserve src, successive hook calls will pull instead of clone.
+  preserveSrc: "TRUE"
+  ##  hugo or mkdocs
+  projectType: "hugo"
+  ## Destination of the html site.
+  targetDir: /srv/static
 
 ephemeral:
-  mountTo: /srv #Where to mount the ephemeral hostPath.
+  ## Where to mount the ephemeral hostPath.
+  mountTo: /srv
 
 hugo:
-  params: "" #Extra params passed to the hugo build.
+  ## Extra params passed to the hugo build.
+  params: ""
 
 mkdocs:
-  params: "" #Extra params passed to the hugo build.
-  
+  ## Extra params passed to the hugo build.
+  params: ""
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  ##  Specifies whether a service account should be created
   create: true
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
+  ##  The name of the service account to use.
+  ##  If not set and create is true, a name is generated using the fullname template
   name:
 
 podSecurityContext: {}

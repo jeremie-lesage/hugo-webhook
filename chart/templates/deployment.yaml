@@ -32,38 +32,38 @@ spec:
         configMap:
           name: hooks-config
       initContainers:
-        - name: "{{ .Chart.Name }}-init"    
+        - name: "{{ .Chart.Name }}-init"
           image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["/var/scripts/refresh.py"]
+          command: [ "/var/scripts/refresh.py" ]
           env:
-          - name: GIT_PROVIDER
-            value: "{{ .Values.git.provider }}"
-          - name: GIT_TRANSPORT
-            value: "{{ .Values.git.transport }}"
-          - name: GIT_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: webhook-token
-                key: token
-          - name: GIT_REPO_BRANCH
-            value: "{{ .Values.git.repoBranch }}"
-          - name: GIT_REPO_URL
-            value: "{{ .Values.git.repoUrl }}"
-          - name: GIT_REPO_CONTENT_PATH
-            value: "{{ .Values.git.repoContentPath }}"
-          - name: GIT_CLONE_DEST
-            value: "{{ .Values.git.cloneDest }}"
-          - name: GIT_PRESERVE_SRC
-            value: "{{ .Values.git.preserveSrc }}"
-          - name: TARGET_DIR
-            value: "{{  .Values.hugo.targetDir }}"
-          - name: HUGO_PARAMS
-            value: "{{  .Values.hugo.params }}"
-          - name: MKDOCS_PARAMS
-            value: "{{  .Values.mkdocs.params }}"
-          - name: PROJECT_TYPE
-            value: "{{ .Values.git.projectType }}"
+            - name: GIT_PROVIDER
+              value: "{{ .Values.git.provider }}"
+            - name: GIT_TRANSPORT
+              value: "{{ .Values.git.transport }}"
+            - name: GIT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-token
+                  key: token
+            - name: GIT_REPO_BRANCH
+              value: "{{ .Values.git.repoBranch }}"
+            - name: GIT_REPO_URL
+              value: "{{ .Values.git.repoUrl }}"
+            - name: GIT_REPO_CONTENT_PATH
+              value: "{{ .Values.git.repoContentPath }}"
+            - name: GIT_CLONE_DEST
+              value: "{{ .Values.git.cloneDest }}"
+            - name: GIT_PRESERVE_SRC
+              value: "{{ .Values.git.preserveSrc }}"
+            - name: TARGET_DIR
+              value: "{{  .Values.hugo.targetDir }}"
+            - name: HUGO_PARAMS
+              value: "{{  .Values.hugo.params }}"
+            - name: MKDOCS_PARAMS
+              value: "{{  .Values.mkdocs.params }}"
+            - name: PROJECT_TYPE
+              value: "{{ .Values.git.projectType }}"
           volumeMounts:
           - name: html
             mountPath: "{{ .Values.ephemeral.mountTo}}"
@@ -72,9 +72,9 @@ spec:
       containers:
         - name: "{{ .Chart.Name }}-web"
           volumeMounts:
-          - name: html
-            mountPath: /usr/share/nginx/html
-            subPath: static
+            - name: html
+              mountPath: /usr/share/nginx/html
+              subPath: static
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.nginxRepository }}:{{ .Values.image.nginxVersion }}"
@@ -93,46 +93,46 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-        - name: "{{ .Chart.Name }}-hook"    
+        - name: "{{ .Chart.Name }}-hook"
           image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-          - name: GIT_PROVIDER
-            value: "{{ .Values.git.provider }}"
-          - name: GIT_TRANSPORT
-            value: "{{ .Values.git.transport }}"
-          - name: GIT_TOKEN
-            valueFrom:
-              secretKeyRef:
-                name: webhook-token
-                key: token
-          - name: GIT_REPO_BRANCH
-            value: "{{ .Values.git.repoBranch }}"
-          - name: GIT_REPO_URL
-            value: "{{ .Values.git.repoUrl }}"
-          - name: GIT_REPO_CONTENT_PATH
-            value: "{{ .Values.git.repoContentPath }}"
-          - name: GIT_CLONE_DEST
-            value: "{{ .Values.git.cloneDest }}"
-          - name: GIT_PRESERVE_SRC
-            value: "{{ .Values.git.preserveSrc }}"
-          - name: TARGET_DIR
-            value: "{{  .Values.git.targetDir }}"
-          - name: HUGO_PARAMS
-            value: "{{  .Values.hugo.params }}"
-          - name: MKDOCS_PARAMS
-            value: "{{  .Values.mkdocs.params }}"
-          - name: PROJECT_TYPE
-            value: "{{ .Values.git.projectType }}"
+            - name: GIT_PROVIDER
+              value: "{{ .Values.git.provider }}"
+            - name: GIT_TRANSPORT
+              value: "{{ .Values.git.transport }}"
+            - name: GIT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-token
+                  key: token
+            - name: GIT_REPO_BRANCH
+              value: "{{ .Values.git.repoBranch }}"
+            - name: GIT_REPO_URL
+              value: "{{ .Values.git.repoUrl }}"
+            - name: GIT_REPO_CONTENT_PATH
+              value: "{{ .Values.git.repoContentPath }}"
+            - name: GIT_CLONE_DEST
+              value: "{{ .Values.git.cloneDest }}"
+            - name: GIT_PRESERVE_SRC
+              value: "{{ .Values.git.preserveSrc }}"
+            - name: TARGET_DIR
+              value: "{{  .Values.git.targetDir }}"
+            - name: HUGO_PARAMS
+              value: "{{  .Values.hugo.params }}"
+            - name: MKDOCS_PARAMS
+              value: "{{  .Values.mkdocs.params }}"
+            - name: PROJECT_TYPE
+              value: "{{ .Values.git.projectType }}"
           ports:
-          - containerPort: 9000
+            - containerPort: 9000
           volumeMounts:
-          - name: hooks-config
-            mountPath: /etc/webhook
-          - name: html
-            mountPath: "{{ .Values.ephemeral.mountTo}}"
-          - name: webhook-ssh-auth
-            mountPath: /ssh
+            - name: hooks-config
+              mountPath: /etc/webhook
+            - name: html
+              mountPath: "{{ .Values.ephemeral.mountTo}}"
+            - name: webhook-ssh-auth
+              mountPath: /ssh
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
