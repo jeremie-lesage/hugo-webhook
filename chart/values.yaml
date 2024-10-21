@@ -12,7 +12,11 @@ image:
   pullPolicy: IfNotPresent
 
 git:
-  privateKey: "" #The ssh private key in order to git pull/clone when using ssh transport
+
+  ## The ssh private key in order to git pull/clone when using ssh transport
+  sshPrivateKey: ""
+  ## When it's set, the sshPrivateKey parameter is ignored
+  existingSshPrivateKeySecret: ""
   ## When using http transport, the git provider, GITHUB, GITLAB, or GITEA.
   provider: "PUBLIC"
   ## HTTP or SSH

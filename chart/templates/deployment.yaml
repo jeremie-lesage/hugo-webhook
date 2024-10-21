@@ -22,15 +22,23 @@ spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       volumes:
-      - name: webhook-ssh-auth
-        secret:
-          secretName: webhook-ssh-auth
-          defaultMode: 256              # = mode 0400
-      - name: html
-        emptyDir: {}
-      - name: hooks-config
-        configMap:
-          name: hooks-config
+      {{- if and (not (empty .Values.git.sshPrivateKey)) (empty .Values.git.existingSshPrivateKeySecret) }}
+        - name: webhook-ssh-auth
+          secret:
+            secretName: webhook-ssh-auth
+            defaultMode: 256              # = mode 0400
+      {{end}}
+      {{- if not (empty .Values.git.existingSshPrivateKeySecret)  }}
+        - name: webhook-ssh-auth
+          secret:
+            secretName: {{ .Values.git.existingSshPrivateKeySecret }}
+            defaultMode: 256              # = mode 0400
+      {{end}}
+        - name: html
+          emptyDir: { }
+        - name: hooks-config
+          configMap:
+            name: hooks-config
       initContainers:
         - name: "{{ .Chart.Name }}-init"
           image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"
@@ -65,10 +73,12 @@ spec:
             - name: PROJECT_TYPE
               value: "{{ .Values.git.projectType }}"
           volumeMounts:
-          - name: html
-            mountPath: "{{ .Values.ephemeral.mountTo}}"
-          - name: webhook-ssh-auth
-            mountPath: /ssh
+            - name: html
+              mountPath: "{{ .Values.ephemeral.mountTo}}"
+            {{- if or (not (empty .Values.git.sshPrivateKey)) (not (empty .Values.git.existingSshPrivateKeySecret)) }}
+            - name: webhook-ssh-auth
+              mountPath: /ssh
+            {{end}}
       containers:
         - name: "{{ .Chart.Name }}-web"
           volumeMounts:
