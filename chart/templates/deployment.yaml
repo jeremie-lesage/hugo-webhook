@@ -55,6 +55,11 @@ spec:
                 secretKeyRef:
                   name: webhook-token
                   key: token
+            - name: GIT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-token
+                  key: username
             {{ end }}
             {{- if not (empty .Values.git.existingWebTokenSecret)  }}
             - name: GIT_TOKEN
@@ -62,6 +67,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.git.existingWebTokenSecret }}
                   key: token
+            - name: GIT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.git.existingWebTokenSecret }}
+                  key: username
             {{end}}
             - name: GIT_REPO_BRANCH
               value: "{{ .Values.git.repoBranch }}"

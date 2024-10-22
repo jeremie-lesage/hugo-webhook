@@ -74,8 +74,9 @@ The following table lists the configurable parameters of the Hugo-webhook chart 
 | `git.existingSshPrivateKeySecret` | When it's set, the sshPrivateKey parameter is ignored                     | `""`                                  |
 | `git.provider`                    | When using http transport, the git provider, github, gitlab, or gitea.    | `"GITHUB"`                            |
 | `git.transport`                   | Http or ssh                                                               | `"HTTP"`                              |
-| `git.token`                       | This is the web token when using http transport                           | `"sampletoken"`                       |
-| `git.username`                    | Username when using http and a token. (gitea, and gitlab needs this.)     | `"sampleuser"`                        |
+| `git.webToken`                    | This is the web token when using http transport                           | `"sampletoken"`                       |
+| `git.webUsername`                 | Username when using http and a token. (gitea, and gitlab needs this.)     | `"sampleuser"`                        |
+| `git.existingWebTokenSecret`      | When it's set, the webToken parameter is ignored                          | `"sampletoken"`                       |
 | `git.http_insecure`               | Nasy setting, dont try this unless you're pretty sure of it.              | `"FALSE"`                             |
 | `git.repoUrl`                     | This is the repo url, note that there is no schema.                       | `"github.com/jfardello/hugo-webhook"` |
 | `git.repoContentPath`             | Hugo will cwd here before build.                                          | `"sample/site"`                       |

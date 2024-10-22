@@ -24,7 +24,7 @@ git:
   webToken: ""
   existingWebTokenSecret: ""
   ## Username when using HTTP and a token. (GITEA, and GITLAB needs this.)
-  username: ""
+  webUsername: ""
   ## Nasy setting, dont try this unless you're pretty sure of it.
   http_insecure: "FALSE"
   ## This is the repo url, note that there is no schema.
