@@ -48,8 +48,7 @@ version is 0.80.0.
 | `GIT_CLONE_DEST`        | Where to clone the repo to, defaults to /srv/src                                                    |
 | `GIT_PRESERVE_SRC`      | Whether to preserve(cache) the src upon build or not. "TRUE" or "FALSE", default to FALSE           |
 | `TARGET_DIR`            | Where to save hugo's built html, defaults to /srv/static                                            |
-| `HUGO_PARAMS`           | Additional HUGO parameter (e.g., `--minify`).                                                       |
-| `MKDOCS_PARAMS`         | Additional MKDOCS parameter (e.g., `--theme material`).                                             |
+| `BUILD_PARAMS`          | Additional HUGO/MKDOCS parameter (e.g., `--minify`).                                                |
 
 ### Volumes and configuration files
 

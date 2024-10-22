@@ -85,9 +85,7 @@ spec:
               value: "{{ .Values.git.preserveSrc }}"
             - name: TARGET_DIR
               value: "{{  .Values.target.baseDir }}{{  .Values.target.baseUrl }}"
-            - name: HUGO_PARAMS
-              value: "{{  .Values.target.params }}"
-            - name: MKDOCS_PARAMS
+            - name: BUILD_PARAMS
               value: "{{  .Values.target.params }}"
             - name: PROJECT_TYPE
               value: "{{ .Values.git.projectType }}"
@@ -144,6 +142,11 @@ spec:
                 secretKeyRef:
                   name: webhook-token
                   key: token
+            - name: GIT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: webhook-token
+                  key: username
             {{ end }}
             {{- if not (empty .Values.git.existingWebTokenSecret)  }}
             - name: GIT_TOKEN
@@ -151,6 +154,11 @@ spec:
                 secretKeyRef:
                   name: {{ .Values.git.existingWebTokenSecret }}
                   key: token
+            - name: GIT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.git.existingWebTokenSecret }}
+                  key: username
             {{end}}
             - name: GIT_REPO_BRANCH
               value: "{{ .Values.git.repoBranch }}"
@@ -164,9 +172,9 @@ spec:
               value: "{{ .Values.git.preserveSrc }}"
             - name: TARGET_DIR
               value: "{{ .Values.target.baseDir }}{{ .Values.target.baseUrl }}"
-            - name: HUGO_PARAMS
-              value: "{{ .Values.target.params }}"
-            - name: MKDOCS_PARAMS
+            - name: TARGET_BASE_URL
+              value: "{{ .Values.target.baseUrl }}"
+            - name: BUILD_PARAMS
               value: "{{ .Values.target.params }}"
             - name: PROJECT_TYPE
               value: "{{ .Values.git.projectType }}"

@@ -57,10 +57,11 @@ def main():
     GIT_PROVIDER = os.getenv('GIT_PROVIDER')
     GIT_SSH_ID_FILE = os.getenv('GIT_SSH_ID_FILE')
     GIT_REPO_CONTENT_PATH = os.getenv('GIT_REPO_CONTENT_PATH')
-    TARGET_DIR = os.getenv('TARGET_DIR')
-    HUGO_PARAMS = os.getenv('HUGO_PARAMS', '')
-    MKDOCS_PARAMS = os.getenv('MKDOCS_PARAMS', '')
     GIT_PRESERVE_SRC = os.getenv('GIT_PRESERVE_SRC', 'FALSE')
+
+    TARGET_DIR = os.getenv('TARGET_DIR')
+    TARGET_BASE_URL = os.getenv('TARGET_BASE_URL')
+    BUILD_PARAMS = os.getenv('BUILD_PARAMS', '')
     PROJECT_TYPE = os.getenv('PROJECT_TYPE', 'hugo')
 
     ## GIT_MANY_BRANCHES is used to define if we deploy one (prod) or many (devs) branches
@@ -93,16 +94,19 @@ def main():
         print("Unsupported transport!")
         exit(-1)
 
-    site_dir = f"{TARGET_DIR}/{GIT_REPO_BRANCH}" if GIT_MANY_BRANCHES == "TRUE" else TARGET_DIR
 
     if PROJECT_TYPE == "hugo":
         # Build the site using Hugo
+        site_dir = f"{TARGET_DIR}/{GIT_REPO_BRANCH}" if GIT_MANY_BRANCHES == "TRUE" else TARGET_DIR
         os.makedirs(site_dir, exist_ok=True)
-        hugo_command = f"hugo --destination {site_dir} {HUGO_PARAMS}"
+        base_url = f"{TARGET_BASE_URL}/{GIT_REPO_BRANCH}" if GIT_MANY_BRANCHES == "TRUE" else TARGET_BASE_URL
+        hugo_command = f"hugo --destination {site_dir} --baseURL {base_url} {BUILD_PARAMS}"
         run_command(hugo_command, cwd=os.path.join(clone_dir, GIT_REPO_CONTENT_PATH))
     elif PROJECT_TYPE == "mkdocs":
+        # Build the site using mkdocs
+        site_dir = f"{TARGET_DIR}/{GIT_REPO_BRANCH}" if GIT_MANY_BRANCHES == "TRUE" else TARGET_DIR
         os.makedirs(site_dir, exist_ok=True)
-        mkdocs_command = f"mkdocs build --site-dir {site_dir} {MKDOCS_PARAMS}"
+        mkdocs_command = f"mkdocs build --site-dir {site_dir} {BUILD_PARAMS}"
         run_command(mkdocs_command, cwd=os.path.join(clone_dir, GIT_REPO_CONTENT_PATH))
     else:
         print("Unsupported project type!")
