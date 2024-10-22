@@ -95,17 +95,25 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /{{ .Values.target.baseUrl }}
+              path: {{ .Values.target.baseUrl }}
               port: http
           readinessProbe:
             httpGet:
-              path: /{{ .Values.target.baseUrl }}
+              path: {{ .Values.target.baseUrl }}
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
         - name: "{{ .Chart.Name }}-hook"
           image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - "/home/app/go/bin/webhook"
+          args:
+            - "-verbose"
+            - "-urlprefix"
+            - "{{ .Values.hooks.urlPrefix }}"
+            - "-hooks"
+            - "{{ .Values.hooks.configFile }}"
           env:
             - name: GIT_PROVIDER
               value: "{{ .Values.git.provider }}"
@@ -127,11 +135,11 @@ spec:
             - name: GIT_PRESERVE_SRC
               value: "{{ .Values.git.preserveSrc }}"
             - name: TARGET_DIR
-              value: "{{  .Values.target.baseDir }}{{  .Values.target.baseUrl }}"
+              value: "{{ .Values.target.baseDir }}{{ .Values.target.baseUrl }}"
             - name: HUGO_PARAMS
-              value: "{{  .Values.target.params }}"
+              value: "{{ .Values.target.params }}"
             - name: MKDOCS_PARAMS
-              value: "{{  .Values.target.params }}"
+              value: "{{ .Values.target.params }}"
             - name: PROJECT_TYPE
               value: "{{ .Values.git.projectType }}"
           ports:

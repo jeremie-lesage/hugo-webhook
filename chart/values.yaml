@@ -51,6 +51,19 @@ target:
   ## Extra params passed to the hugo/mkdocs build.
   params: ""
 
+hooks:
+  ## url prefix to use for served hooks (protocol://yourserver:port/PREFIX/:hook-id)
+  urlPrefix: "hooks"
+  ## path to the json or yaml file containing defined hooks the webhook should serve
+  configFile: "/etc/webhook/hooks.yaml"
+  ## True if hook is sent by Gitlab
+  gitlabHook: false
+  ## Secret token X-Gitlab-Token
+  gitlabToken: ""
+  ##  Must be int
+  gitlabProjectId: ~
+  ## Comments to activate the deployment
+  gitlabTriggerMessage: ""
 
 imagePullSecrets: []
 nameOverride: ""
