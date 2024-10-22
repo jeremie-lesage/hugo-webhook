@@ -7,6 +7,32 @@ data:
     - id: refresh
       execute-command: "/var/scripts/refresh.py"
       command-working-directory: "/tmp"
+      trigger-rule:
+        {{- if .Values.hooks.gitlabHook }}
+        and:
+          - match:
+              type: "value"
+              value: "{{ .Values.hooks.gitlabToken }}"
+              parameter:
+                source: "header"
+                name: "X-Gitlab-Token"
+        {{- if not (empty .Values.hooks.gitlabProjectId )}}
+          - match:
+              type: "value"
+              value: "{{ .Values.hooks.gitlabProjectId }}"
+              parameter:
+                source: "payload"
+                name: "project_id"
+        {{ end }}
+        {{- if not (empty .Values.hooks.gitlabTriggerMessage )}}
+          - match:
+              type: "value"
+              value: "{{ .Values.hooks.gitlabTriggerMessage }}"
+              parameter:
+                source: "payload"
+                name: "object_attributes.note"
+        {{ end }}
+        {{ end }}
     - id: hugo
       execute-command: "/var/scripts/refresh.py"
       command-working-directory: "/tmp"
@@ -14,6 +40,38 @@ data:
         - source: "string"
           envname: "PROJECT_TYPE"
           name: "hugo"
+        - source: "string"
+          envname: "GIT_MANY_BRANCHES"
+          name: "TRUE"
+        - source: "payload"
+          envname: "GIT_REPO_BRANCH"
+          name: "merge_request.source_branch"
+      trigger-rule:
+        {{- if .Values.hooks.gitlabHook }}
+        and:
+          - match:
+              type: "value"
+              value: "{{ .Values.hooks.gitlabToken }}"
+              parameter:
+                source: "header"
+                name: "X-Gitlab-Token"
+        {{- if not (empty .Values.hooks.gitlabProjectId )}}
+          - match:
+              type: "value"
+              value: "{{ .Values.hooks.gitlabProjectId }}"
+              parameter:
+                source: "payload"
+                name: "project_id"
+        {{ end }}
+        {{- if not (empty .Values.hooks.gitlabTriggerMessage )}}
+          - match:
+              type: "value"
+              value: "{{ .Values.hooks.gitlabTriggerMessage }}"
+              parameter:
+                source: "payload"
+                name: "object_attributes.note"
+        {{ end }}
+        {{ end }}
     - id: mkdocs
       execute-command: "/var/scripts/refresh.py"
       command-working-directory: "/tmp"
