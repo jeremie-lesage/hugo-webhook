@@ -84,7 +84,7 @@ spec:
             - name: GIT_PRESERVE_SRC
               value: "{{ .Values.git.preserveSrc }}"
             - name: TARGET_DIR
-              value: "{{  .Values.target.baseDir }}{{  .Values.target.baseUrl }}/{{ .Values.git.repoBranch }}"
+              value: "{{  .Values.target.baseDir }}{{  .Values.target.baseUrl }}"
             - name: TARGET_BASE_URL
               value: "{{ .Values.target.baseUrl }}"
             - name: BUILD_PARAMS
@@ -116,11 +116,19 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
+              {{- if (eq .Values.git.manyBranches "TRUE") }}
+              path: "{{ .Values.target.baseUrl }}/{{ .Values.git.repoBranch }}"
+              {{- else }}
               path: {{ .Values.target.baseUrl }}
+              {{ end }}
               port: http
           readinessProbe:
             httpGet:
+              {{- if (eq .Values.git.manyBranches "TRUE") }}
+              path: "{{ .Values.target.baseUrl }}/{{ .Values.git.repoBranch }}"
+              {{- else }}
               path: {{ .Values.target.baseUrl }}
+              {{ end }}
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
