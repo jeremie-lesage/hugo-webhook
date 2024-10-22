@@ -31,25 +31,25 @@ data:
         {{- if .Values.hooks.gitlabHook }}
         and:
         - match:
-            type: "value",
-            value: "{{ .Values.hooks.gitlabToken }}",
+            type: "value"
+            value: "{{ .Values.hooks.gitlabToken }}"
             parameter:
-              source: "header",
+              source: "header"
               name: "X-Gitlab-Token"
         {{- if not (empty .Values.hooks.gitlabProjectId )}}
         - match:
-            type: "value",
-            value: "{{ .Values.hooks.gitlabProjectId }}",
+            type: "value"
+            value: "{{ .Values.hooks.gitlabProjectId }}"
             parameter:
-              source: "payload",
+              source: "payload"
               name: "project_id"
         {{ end }}
         {{- if not (empty .Values.hooks.gitlabTriggerMessage )}}
         - match:
-            type: "value",
-            value: "{{ .Values.hooks.gitlabTriggerMessage }}",
+            type: "value"
+            value: "{{ .Values.hooks.gitlabTriggerMessage }}"
             parameter:
-              source: "payload",
+              source: "payload"
               name: "object_attributes.note"
         {{ end }}
         {{ end }}
