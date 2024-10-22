@@ -82,6 +82,7 @@ The following table lists the configurable parameters of the Hugo-webhook chart 
 | `git.repoContentPath`             | Hugo will cwd here before build.                                          | `"sample/site"`                       |
 | `git.repoBranch`                  | Branch that will be pulled/cloned.                                        | `"master"`                            |
 | `git.projectType`                 | hugo or mkdocs.                                                           | `"hugo"`                              |
+| `git.manyBranches`                | Do we serve many branches (dev) or only one branch (prod).                | `"FALSE"`                             |
 | `git.cloneDest`                   | Destination of the source files.                                          | `"/srv/src"`                          |
 | `git.preserveSrc`                 | Preserve src, successive hook calls will pull instead of clone.           | `"TRUE"`                              |
 | `ephemeral.mountTo`               | Where to mount the ephemeral hostpath.                                    | `"/srv"`                              |

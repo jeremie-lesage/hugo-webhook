@@ -84,11 +84,15 @@ spec:
             - name: GIT_PRESERVE_SRC
               value: "{{ .Values.git.preserveSrc }}"
             - name: TARGET_DIR
-              value: "{{  .Values.target.baseDir }}{{  .Values.target.baseUrl }}"
+              value: "{{  .Values.target.baseDir }}{{  .Values.target.baseUrl }}/{{ .Values.git.repoBranch }}"
+            - name: TARGET_BASE_URL
+              value: "{{ .Values.target.baseUrl }}"
             - name: BUILD_PARAMS
               value: "{{  .Values.target.params }}"
             - name: PROJECT_TYPE
               value: "{{ .Values.git.projectType }}"
+            - name: GIT_MANY_BRANCHES
+              value: "{{ .Values.git.manyBranches }}"
           volumeMounts:
             - name: html
               mountPath: "{{ .Values.ephemeral.mountTo}}"
