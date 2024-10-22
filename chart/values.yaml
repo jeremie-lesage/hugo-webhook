@@ -21,7 +21,8 @@ git:
   ## HTTP or SSH
   transport: "HTTP"
   ## This is the web token when using HTTP transport
-  token: ""
+  webToken: ""
+  existingWebTokenSecret: ""
   ## Username when using HTTP and a token. (GITEA, and GITLAB needs this.)
   username: ""
   ## Nasy setting, dont try this unless you're pretty sure of it.

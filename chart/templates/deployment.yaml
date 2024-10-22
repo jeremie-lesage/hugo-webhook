@@ -49,11 +49,20 @@ spec:
               value: "{{ .Values.git.provider }}"
             - name: GIT_TRANSPORT
               value: "{{ .Values.git.transport }}"
+            {{- if and (not (empty .Values.git.webToken)) (empty .Values.git.existingWebTokenSecret) }}
             - name: GIT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: webhook-token
                   key: token
+            {{ end }}
+            {{- if not (empty .Values.git.existingWebTokenSecret)  }}
+            - name: GIT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.git.existingWebTokenSecret }}
+                  key: token
+            {{end}}
             - name: GIT_REPO_BRANCH
               value: "{{ .Values.git.repoBranch }}"
             - name: GIT_REPO_URL
@@ -119,11 +128,20 @@ spec:
               value: "{{ .Values.git.provider }}"
             - name: GIT_TRANSPORT
               value: "{{ .Values.git.transport }}"
+            {{- if and (not (empty .Values.git.webToken)) (empty .Values.git.existingWebTokenSecret) }}
             - name: GIT_TOKEN
               valueFrom:
                 secretKeyRef:
                   name: webhook-token
                   key: token
+            {{ end }}
+            {{- if not (empty .Values.git.existingWebTokenSecret)  }}
+            - name: GIT_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.git.existingWebTokenSecret }}
+                  key: token
+            {{end}}
             - name: GIT_REPO_BRANCH
               value: "{{ .Values.git.repoBranch }}"
             - name: GIT_REPO_URL
