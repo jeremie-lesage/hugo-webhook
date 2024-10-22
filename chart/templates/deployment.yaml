@@ -97,7 +97,7 @@ spec:
             {{- if or (not (empty .Values.git.sshPrivateKey)) (not (empty .Values.git.existingSshPrivateKeySecret)) }}
             - name: webhook-ssh-auth
               mountPath: /ssh
-            {{end}}
+            {{ end }}
       containers:
         - name: "{{ .Chart.Name }}-web"
           volumeMounts:
@@ -177,8 +177,10 @@ spec:
               mountPath: /etc/webhook
             - name: html
               mountPath: "{{ .Values.ephemeral.mountTo}}"
+            {{- if or (not (empty .Values.git.sshPrivateKey)) (not (empty .Values.git.existingSshPrivateKeySecret)) }}
             - name: webhook-ssh-auth
               mountPath: /ssh
+            {{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
