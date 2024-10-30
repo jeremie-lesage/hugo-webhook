@@ -38,7 +38,8 @@ def git_command(repo_url, clone_dir, branch):
             run_command(f"git clone --depth 1 {repo_url} {clone_dir}")
         else:
             # Pull repository if already exists
-            run_command(f"git pull --ff-only origin {branch}", cwd=clone_dir)
+            run_command(f"git fetch", cwd=clone_dir)
+            run_command(f"git reset --hard origin/{branch}", cwd=clone_dir)
     except Exception as e:
         print(f"Git operation failed: {str(e)}")
         raise
@@ -78,12 +79,15 @@ def main():
 
     # Handle cloning or pulling the repository based on transport method
     if TRANSPORT == "SSH":
+        print("Cloning/updating with SSH..")
         git_ssh_command = f"ssh -oStrictHostKeyChecking=no -i {GIT_SSH_ID_FILE}"
         run_command(f"GIT_SSH_COMMAND=\"{git_ssh_command}\" git clone {GIT_REPO_URL} {clone_dir}")
     elif TRANSPORT == "HTTP":
         if GIT_PROVIDER == "GITHUB":
+            print("Cloning/updating http GITHUB..")
             repo_url = f"{SCHEMA}://{GIT_TOKEN}:x-oauth-basic@{GIT_REPO_URL}"
         elif GIT_PROVIDER in ("GITEA", "GITLAB"):
+            print("Cloning/updating http GITLAB..")
             repo_url = f"{SCHEMA}://{GIT_USERNAME}:{GIT_TOKEN}@{GIT_REPO_URL}"
         else:
             print("Cloning/updating a public repo..")
