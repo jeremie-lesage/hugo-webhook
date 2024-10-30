@@ -34,6 +34,18 @@ spec:
             secretName: {{ .Values.git.existingSshPrivateKeySecret }}
             defaultMode: 256              # = mode 0400
       {{end}}
+      {{- if and (not (empty .Values.git.gitCredentials)) (empty .Values.git.existingGitCredentials) }}
+        - name: git-credentials
+          secret:
+            secretName: git-credentials
+            defaultMode: 256
+      {{ end }}
+      {{- if not (empty .Values.git.existingGitCredentials)  }}
+        - name: git-credentials
+          secret:
+            secretName: {{ .Values.git.existingGitCredentials }}
+            defaultMode: 256
+      {{end}}
         - name: html
           emptyDir: { }
         - name: hooks-config
@@ -49,30 +61,6 @@ spec:
               value: "{{ .Values.git.provider }}"
             - name: GIT_TRANSPORT
               value: "{{ .Values.git.transport }}"
-            {{- if and (not (empty .Values.git.webToken)) (empty .Values.git.existingWebTokenSecret) }}
-            - name: GIT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: webhook-token
-                  key: token
-            - name: GIT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: webhook-token
-                  key: username
-            {{ end }}
-            {{- if not (empty .Values.git.existingWebTokenSecret)  }}
-            - name: GIT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.git.existingWebTokenSecret }}
-                  key: token
-            - name: GIT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.git.existingWebTokenSecret }}
-                  key: username
-            {{end}}
             - name: GIT_REPO_BRANCH
               value: "{{ .Values.git.repoBranch }}"
             - name: GIT_REPO_URL
@@ -99,6 +87,11 @@ spec:
             {{- if or (not (empty .Values.git.sshPrivateKey)) (not (empty .Values.git.existingSshPrivateKeySecret)) }}
             - name: webhook-ssh-auth
               mountPath: /ssh
+            {{ end }}
+            {{- if or (not (empty .Values.git.gitCredentials)) (not (empty .Values.git.existingGitCredentials)) }}
+            - mountPath: "/root/.config/git/credentials"
+              name: git-credentials
+              readOnly: true
             {{ end }}
       containers:
         - name: "{{ .Chart.Name }}-web"
@@ -148,30 +141,6 @@ spec:
               value: "{{ .Values.git.provider }}"
             - name: GIT_TRANSPORT
               value: "{{ .Values.git.transport }}"
-            {{- if and (not (empty .Values.git.webToken)) (empty .Values.git.existingWebTokenSecret) }}
-            - name: GIT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: webhook-token
-                  key: token
-            - name: GIT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: webhook-token
-                  key: username
-            {{ end }}
-            {{- if not (empty .Values.git.existingWebTokenSecret)  }}
-            - name: GIT_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.git.existingWebTokenSecret }}
-                  key: token
-            - name: GIT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: {{ .Values.git.existingWebTokenSecret }}
-                  key: username
-            {{end}}
             - name: GIT_REPO_BRANCH
               value: "{{ .Values.git.repoBranch }}"
             - name: GIT_REPO_URL
@@ -200,6 +169,11 @@ spec:
             {{- if or (not (empty .Values.git.sshPrivateKey)) (not (empty .Values.git.existingSshPrivateKeySecret)) }}
             - name: webhook-ssh-auth
               mountPath: /ssh
+            {{ end }}
+            {{- if or (not (empty .Values.git.gitCredentials)) (not (empty .Values.git.existingGitCredentials)) }}
+            - mountPath: "/root/.git-credentials"
+              name: git-credentials
+              readOnly: true
             {{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

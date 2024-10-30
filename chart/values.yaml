@@ -8,7 +8,7 @@ image:
   ## webhook docker file
   hookRepository: rg.fr-par.scw.cloud/jeci/hugo-webhook
   ## image tag for the webhook image
-  hookRepositoryVersion: 0.2.1
+  hookRepositoryVersion: 0.4.0
   pullPolicy: IfNotPresent
 
 git:
@@ -20,11 +20,9 @@ git:
   provider: "PUBLIC"
   ## HTTP or SSH
   transport: "HTTP"
-  ## This is the web token when using HTTP transport
-  webToken: ""
-  existingWebTokenSecret: ""
-  ## Username when using HTTP and a token. (GITEA, and GITLAB needs this.)
-  webUsername: ""
+  ## This is the ~/.git-credentials file as describe in  https://git-scm.com/docs/gitcredentials
+  gitCredentials: ""
+  existingGitCredentials: ""
   ## Nasy setting, dont try this unless you're pretty sure of it.
   http_insecure: "FALSE"
   ## This is the repo url, note that there is no schema.
@@ -87,7 +85,6 @@ service:
   port: 80
   hookPort: 9000
 ingress:
-  traefikTls: false
   enabled: false
   annotations: {}
   hosts:

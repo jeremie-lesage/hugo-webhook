@@ -47,7 +47,6 @@ hugo:
   params: --minify
 
 ingress:
-  traefikTls: true
   enabled: true
   annotations:
     traefik.ingress.kubernetes.io/router.entrypoints: websecure
@@ -62,53 +61,51 @@ ingress:
 
 The following table lists the configurable parameters of the Hugo-webhook chart and their default values.
 
-| Parameter                         | Description                                                               | Default                               |
-|-----------------------------------|---------------------------------------------------------------------------|---------------------------------------|
-| `replicaCount`                    |                                                                           | `1`                                   |
-| `image.nginxRepository`           | Nginx image                                                               | `"nginx"`                             |
-| `image.nginxVersion`              | Image tag for the nginx image                                             | `"latest"`                            |
-| `image.hookRepository`            | Webhook docker file                                                       | `"quay.io/jfardello/hugo-webhook"`    |
-| `image.hookRepositoryVersion`     | Image tag for the webhook image                                           | `"latest"`                            |
-| `image.pullPolicy`                |                                                                           | `"IfNotPresent"`                      |
-| `git.sshPrivateKey`               | The ssh private key in order to git pull/clone when using ssh transport   | `""`                                  |
-| `git.existingSshPrivateKeySecret` | When it's set, the sshPrivateKey parameter is ignored                     | `""`                                  |
-| `git.provider`                    | When using http transport, the git provider, github, gitlab, or gitea.    | `"GITHUB"`                            |
-| `git.transport`                   | Http or ssh                                                               | `"HTTP"`                              |
-| `git.webToken`                    | This is the web token when using http transport                           | `"sampletoken"`                       |
-| `git.webUsername`                 | Username when using http and a token. (gitea, and gitlab needs this.)     | `"sampleuser"`                        |
-| `git.existingWebTokenSecret`      | When it's set, the webToken parameter is ignored                          | `"sampletoken"`                       |
-| `git.http_insecure`               | Nasy setting, dont try this unless you're pretty sure of it.              | `"FALSE"`                             |
-| `git.repoUrl`                     | This is the repo url, note that there is no schema.                       | `"github.com/jfardello/hugo-webhook"` |
-| `git.repoContentPath`             | Hugo will cwd here before build.                                          | `"sample/site"`                       |
-| `git.repoBranch`                  | Branch that will be pulled/cloned.                                        | `"master"`                            |
-| `git.projectType`                 | hugo or mkdocs.                                                           | `"hugo"`                              |
-| `git.manyBranches`                | Do we serve many branches (dev) or only one branch (prod).                | `"FALSE"`                             |
-| `git.cloneDest`                   | Destination of the source files.                                          | `"/srv/src"`                          |
-| `git.preserveSrc`                 | Preserve src, successive hook calls will pull instead of clone.           | `"TRUE"`                              |
-| `ephemeral.mountTo`               | Where to mount the ephemeral hostpath.                                    | `"/srv"`                              |
-| `target.baseUrl`                  | Base Url of the target site.                                              | `"/"`                                 |
-| `target.baseDir`                  | Destination of the html site (plus baseUrl for mkDocs).                   | `"/srv/static"`                       |
-| `target.params`                   | Extra params passed to the hugo build.                                    | `"--minify"`                          |
-| `imagePullSecrets`                |                                                                           | `[]`                                  |
-| `nameOverride`                    |                                                                           | `""`                                  |
-| `fullnameOverride`                |                                                                           | `""`                                  |
-| `serviceAccount.create`           |                                                                           | `true`                                |
-| `serviceAccount.annotations`      |                                                                           | `{}`                                  |
-| `serviceAccount.name`             |                                                                           | `null`                                |
-| `podSecurityContext`              |                                                                           | `{}`                                  |
-| `securityContext`                 |                                                                           | `{}`                                  |
-| `service.type`                    |                                                                           | `"ClusterIP"`                         |
-| `service.port`                    |                                                                           | `80`                                  |
-| `service.hookPort`                |                                                                           | `9000`                                |
-| `ingress.enabled`                 |                                                                           | `false`                               |
-| `ingress.traefikTls`              | For properly render Notes.txt, as traefik ingress doesn't use tls section | false                                 |
-| `ingress.annotations`             |                                                                           | `{}`                                  |
-| `ingress.hosts`                   |                                                                           | `[{"host": "chart-example.local"}]`   |
-| `ingress.tls`                     |                                                                           | `[]`                                  |
-| `resources`                       |                                                                           | `{}`                                  |
-| `nodeSelector`                    |                                                                           | `{}`                                  |
-| `tolerations`                     |                                                                           | `[]`                                  |
-| `affinity`                        |                                                                           | `{}`                                  |
+| Parameter                         | Description                                                                                 | Default                                   |
+|-----------------------------------|---------------------------------------------------------------------------------------------|-------------------------------------------|
+| `replicaCount`                    |                                                                                             | `1`                                       |
+| `image.nginxRepository`           | Nginx image                                                                                 | `"nginx"`                                 |
+| `image.nginxVersion`              | Image tag for the nginx image                                                               | `"latest"`                                |
+| `image.hookRepository`            | Webhook docker file                                                                         | `"rg.fr-par.scw.cloud/jeci/hugo-webhook"` |
+| `image.hookRepositoryVersion`     | Image tag for the webhook image                                                             | `"0.3.1"`                                 |
+| `image.pullPolicy`                |                                                                                             | `"IfNotPresent"`                          |
+| `git.sshPrivateKey`               | The ssh private key in order to git pull/clone when using ssh transport                     | `""`                                      |
+| `git.existingSshPrivateKeySecret` | When it's set, the sshPrivateKey parameter is ignored                                       | `""`                                      |
+| `git.provider`                    | When using http transport, the git provider, github, gitlab, or gitea.                      | `"GITHUB"`                                |
+| `git.transport`                   | Http or ssh                                                                                 | `"HTTP"`                                  |
+| `git.gitCredentials`              | This is the ~/.git-credentials file as describe in  https://git-scm.com/docs/gitcredentials | `""`                                      |
+| `git.existingGitCredentials`      | When it's set, the gitCredentials parameter is ignored                                      | `""`                                      |
+| `git.http_insecure`               | Nasy setting, dont try this unless you're pretty sure of it.                                | `"FALSE"`                                 |
+| `git.repoUrl`                     | This is the repo url, note that there is no schema.                                         | `"github.com/jfardello/hugo-webhook"`     |
+| `git.repoContentPath`             | Hugo will cwd here before build.                                                            | `""`                                      |
+| `git.repoBranch`                  | Branch that will be pulled/cloned.                                                          | `"master"`                                |
+| `git.projectType`                 | hugo or mkdocs.                                                                             | `"hugo"`                                  |
+| `git.manyBranches`                | Do we serve many branches (dev) or only one branch (prod).                                  | `"FALSE"`                                 |
+| `git.cloneDest`                   | Destination of the source files.                                                            | `"/srv/src"`                              |
+| `git.preserveSrc`                 | Preserve src, successive hook calls will pull instead of clone.                             | `"TRUE"`                                  |
+| `ephemeral.mountTo`               | Where to mount the ephemeral hostpath.                                                      | `"/srv"`                                  |
+| `target.baseUrl`                  | Base Url of the target site.                                                                | `"/"`                                     |
+| `target.baseDir`                  | Destination of the html site (plus baseUrl for mkDocs).                                     | `"/srv/static"`                           |
+| `target.params`                   | Extra params passed to the hugo or mkdocs build.                                            | `""`                                      |
+| `imagePullSecrets`                |                                                                                             | `[]`                                      |
+| `nameOverride`                    |                                                                                             | `""`                                      |
+| `fullnameOverride`                |                                                                                             | `""`                                      |
+| `serviceAccount.create`           |                                                                                             | `true`                                    |
+| `serviceAccount.annotations`      |                                                                                             | `{}`                                      |
+| `serviceAccount.name`             |                                                                                             | `null`                                    |
+| `podSecurityContext`              |                                                                                             | `{}`                                      |
+| `securityContext`                 |                                                                                             | `{}`                                      |
+| `service.type`                    |                                                                                             | `"ClusterIP"`                             |
+| `service.port`                    |                                                                                             | `80`                                      |
+| `service.hookPort`                |                                                                                             | `9000`                                    |
+| `ingress.enabled`                 |                                                                                             | `false`                                   |
+| `ingress.annotations`             |                                                                                             | `{}`                                      |
+| `ingress.hosts`                   |                                                                                             | `[{"host": "chart-example.local"}]`       |
+| `ingress.tls`                     |                                                                                             | `[]`                                      |
+| `resources`                       |                                                                                             | `{}`                                      |
+| `nodeSelector`                    |                                                                                             | `{}`                                      |
+| `tolerations`                     |                                                                                             | `[]`                                      |
+| `affinity`                        |                                                                                             | `{}`                                      |
 
 
 

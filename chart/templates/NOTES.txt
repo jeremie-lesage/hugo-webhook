@@ -1,6 +1,6 @@
 1. hugo-webhook has been deployed:
 
-{{- if or (eq .Values.ingress.enabled true) (eq .Values.ingress.traefikTls true ) }}
+{{- if eq .Values.ingress.enabled true  }}
 {{- range $host := .Values.ingress.hosts }}
   Access the site at:
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}

@@ -6,7 +6,6 @@ ENV MKDOCS_VERSION=1.6.1
 # Configuration variables
 ENV GIT_REPO_CONTENT_PATH=""
 ENV GIT_CLONE_DEST=/srv/src
-ENV GIT_USERNAME="nologin"
 ENV GIT_REPO_BRANCH=master
 ENV GIT_SSH_ID_FILE=/ssh/id_rsa
 ENV TARGET_DIR=/srv/static

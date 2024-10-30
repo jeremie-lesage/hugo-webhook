@@ -39,8 +39,6 @@ version is 0.80.0.
 |-------------------------|-----------------------------------------------------------------------------------------------------|
 | `GIT_PROVIDER`          | Your git provider (GITHUB                                                                           |GITEA|GITLAB), defaults to GITHUB, only used if TRANSPORT is HTTP.       |
 | `GIT_TRANSPORT`         | Whether to use SSH or HTTP git transport, defaults to HTTP.                                         |
-| `GIT_TOKEN`             | A gitlab, geta, or github token for authorizing th git pull over http.                              |
-| `GIT_USERNAME`          | When using webtokens and GITEA, the tokens' owner username.                                         |
 | `GIT_HTTP_INSECURE`     | Force clear http as transport. (A nasty thing, you know what you're doing).                         |
 | `GIT_REPO_URL`          | The URL of the git repository.                                                                      |
 | `GIT_REPO_CONTENT_PATH` | The subpath of the repository holding the hugo source files (e.g., where `config.toml` is located). |
@@ -94,7 +92,7 @@ docker tag jeci/hugo-webhook rg.fr-par.scw.cloud/jeci/hugo-webhook:0.1.0
 docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:0.1.0
 
 $ helm repo add jeci https://jeci.fr/helm-charts/
-$ helm install jeci/hugo-webhook --set -e GIT_TOKEN=xxxxxredactedyyyyyyyzzzzzz \
+$ helm install jeci/hugo-webhook --set -e GIT_PROVIDER=GITHUB \
   --set GIT_REPO_URL=github.com/username/hugo-site.git
 ```
 
