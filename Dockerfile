@@ -1,6 +1,7 @@
-FROM        docker.io/library/alpine:3.20
+FROM docker.io/library/alpine:3.20
 
 ENV WEBHOOK_VERSION=2.8.1
+ENV MKDOCS_VERSION=1.6.1
 
 # Configuration variables
 ENV GIT_REPO_CONTENT_PATH=""
@@ -16,14 +17,22 @@ RUN addgroup -S app && \
     chown app:app /etc/webhook/  && \
     chmod 755 /etc/webhook/ && \
     apk add --update --no-cache \
+        ca-certificates \
         go \
         bash \
         git \
         hugo \
-        mkdocs-material-extensions \
-        mkdocs-material \
-        mkdocs \
-        py3-regex
+        py3-regex \
+        py3-pip \
+        build-base && \
+    pip install --break-system-packages \
+                mkdocs==${MKDOCS_VERSION} \
+                mkdocs-get-deps \
+                mkdocs-git-authors-plugin \
+                mkdocs-git-revision-date-localized-plugin \
+                mkdocs-material \
+                mkdocs-material-extensions
+
 
 ENV HOME=/home/app
 
