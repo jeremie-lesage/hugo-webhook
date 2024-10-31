@@ -8,7 +8,7 @@ image:
   ## webhook docker file
   hookRepository: rg.fr-par.scw.cloud/jeci/hugo-webhook
   ## image tag for the webhook image
-  hookRepositoryVersion: 0.4.0
+  hookRepositoryVersion: 0.4.6
   pullPolicy: IfNotPresent
 
 git:

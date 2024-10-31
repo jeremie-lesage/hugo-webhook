@@ -38,13 +38,11 @@ spec:
         - name: git-credentials
           secret:
             secretName: git-credentials
-            defaultMode: 256
       {{ end }}
       {{- if not (empty .Values.git.existingGitCredentials)  }}
         - name: git-credentials
           secret:
             secretName: {{ .Values.git.existingGitCredentials }}
-            defaultMode: 256
       {{end}}
         - name: html
           emptyDir: { }
@@ -89,9 +87,10 @@ spec:
               mountPath: /ssh
             {{ end }}
             {{- if or (not (empty .Values.git.gitCredentials)) (not (empty .Values.git.existingGitCredentials)) }}
-            - mountPath: "/root/.config/git/credentials"
-              name: git-credentials
+            - name: git-credentials
               readOnly: true
+              mountPath: /home/app/.git-credentials
+              subPath: git-credentials
             {{ end }}
       containers:
         - name: "{{ .Chart.Name }}-web"
@@ -171,9 +170,10 @@ spec:
               mountPath: /ssh
             {{ end }}
             {{- if or (not (empty .Values.git.gitCredentials)) (not (empty .Values.git.existingGitCredentials)) }}
-            - mountPath: "/root/.git-credentials"
-              name: git-credentials
+            - name: git-credentials
               readOnly: true
+              mountPath: /home/app/.git-credentials
+              subPath: git-credentials
             {{ end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:

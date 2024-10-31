@@ -24,7 +24,7 @@ def git_command(repo_url, clone_dir, branch):
             run_command(["git", "clone", "--depth", "1", repo_url, clone_dir])
         else:
             # Pull repository if already exists
-            run_command(["git", "fetch"], cwd=clone_dir)
+            run_command(["git", "fetch", "-v"], cwd=clone_dir)
             run_command(["git", "reset", "--hard", f"origin/{branch}"], cwd=clone_dir)
     except Exception as e:
         print(f"Git operation failed: {str(e)}")
@@ -72,7 +72,7 @@ def main():
             print("Cloning/updating a private repo..")
             repo_url = f"{SCHEMA}://{GIT_REPO_URL}"
             # Use credentials from $HOME/.git-credentials
-            run_command(["git", "config", "-credential.helper", "store"])
+            run_command(["git", "config", "--global", "credential.helper", "store"])
         else:
             print("Cloning/updating a public repo..")
             repo_url = f"{SCHEMA}://{GIT_REPO_URL}"
