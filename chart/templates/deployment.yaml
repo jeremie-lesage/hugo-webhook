@@ -156,8 +156,22 @@ spec:
               value: "{{ .Values.target.baseDir }}{{ .Values.target.baseUrl }}"
             - name: TARGET_BASE_URL
               value: "{{ .Values.target.baseUrl }}"
+            - name: TARGET_SERVER_URI
+              value: "{{ .Values.target.serverUri }}"
             - name: BUILD_PARAMS
               value: "{{ .Values.target.params }}"
+            - name: MATRIX_SERVER
+              value: "{{ .Values.matrix.server }}"
+            - name: MATRIX_ROOM
+              valueFrom:
+                secretKeyRef:
+                  name: matrix-token
+                  key: room
+            - name: MATRIX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: matrix-token
+                  key: token
             - name: PROJECT_TYPE
               value: "{{ .Values.git.projectType }}"
           ports:

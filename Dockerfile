@@ -30,7 +30,8 @@ RUN addgroup -S app && \
                 mkdocs-git-authors-plugin \
                 mkdocs-git-revision-date-localized-plugin \
                 mkdocs-material \
-                mkdocs-material-extensions
+                mkdocs-material-extensions \
+                matrix_client
 
 
 ENV HOME=/home/app

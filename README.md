@@ -49,6 +49,9 @@ version is 0.80.0.
 | `TARGET_SERVER_URI`     | /app                                                                                                |
 | `TARGET_BASE_URL`       | https://my-server.app                                                                               |
 | `BUILD_PARAMS`          | Additional HUGO/MKDOCS parameter (e.g., `--minify --gc`).                                           |
+| `MATRIX_SERVER`         | Matrix server (ex. https://matrix.org)                                                              |
+| `MATRIX_ROOM`           | Room to write to (ex. !roomid:matrix.org)                                                           |
+| `MATRIX_TOKEN`          | Token use to connect to matrix server                                                               |
 
 ### Volumes and configuration files
 

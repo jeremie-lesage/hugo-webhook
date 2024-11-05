@@ -2,7 +2,7 @@
 import os
 import subprocess
 import shutil
-
+from matrix_client.api import MatrixHttpApi
 
 def run_command(command, cwd=None, env=None):
     """Run a shell command and return its output."""
@@ -30,6 +30,14 @@ def git_command(repo_url, clone_dir, branch):
         print(f"Git operation failed: {str(e)}")
         raise
 
+def send_matrix_message(message):
+    matrix_server = os.getenv('MATRIX_SERVER', '')
+    matrix_room = os.getenv('MATRIX_ROOM')
+    matrix_token = os.getenv('MATRIX_TOKEN')
+    if matrix_server != "" and matrix_room != "" and matrix_token != "":
+        print(f"Sending message to {matrix_server} @ {matrix_room}")
+        matrix = MatrixHttpApi(matrix_server, token=matrix_token)
+        response = matrix.send_message(matrix_room, message)
 
 def main():
     print("Building site..")
@@ -99,6 +107,7 @@ def main():
             hugo_cmd += build_params.split(' ')
 
         run_command(hugo_cmd, cwd=os.path.join(clone_dir, git_repo_content_path))
+        send_matrix_message(f"Site Update {public_uri}")
     elif project_type == "mkdocs":
         # Build the site using mkdocs
         site_dir = f"{target_dir}/{git_repo_branch}" if git_many_branches == "TRUE" else target_dir
@@ -109,6 +118,7 @@ def main():
             mkdocs_cmd += build_params.split(' ')
 
         run_command(mkdocs_cmd, cwd=os.path.join(clone_dir, git_repo_content_path))
+        send_matrix_message(f"Site Update {public_uri}")
     else:
         print("Unsupported project type!")
         exit(-2)
