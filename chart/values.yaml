@@ -45,6 +45,8 @@ ephemeral:
   mountTo: /srv
 
 target:
+  ## Public Uri (without leading slash)
+  serverUri: https://localhost
   ## Base Url of the target site.
   baseUrl: /
   ## Destination of the html site (plus baseUrl for mkDocs).

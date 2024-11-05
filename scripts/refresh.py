@@ -35,76 +35,86 @@ def main():
     print("Building site..")
 
     # Environment variables (these should be set beforehand in your environment)
-    TRANSPORT = os.getenv('GIT_TRANSPORT', 'HTTP')
-    GIT_HTTP_INSECURE = os.getenv('GIT_HTTP_INSECURE', 'FALSE')
-    GIT_REPO_URL = os.getenv('GIT_REPO_URL')
-    GIT_CLONE_DEST = os.getenv('GIT_CLONE_DEST')
-    GIT_REPO_BRANCH = os.getenv('GIT_REPO_BRANCH', 'main')
-    GIT_PROVIDER = os.getenv('GIT_PROVIDER')
-    GIT_SSH_ID_FILE = os.getenv('GIT_SSH_ID_FILE')
-    GIT_REPO_CONTENT_PATH = os.getenv('GIT_REPO_CONTENT_PATH')
-    GIT_PRESERVE_SRC = os.getenv('GIT_PRESERVE_SRC', 'FALSE')
+    transport = os.getenv('GIT_TRANSPORT', 'HTTP')
+    git_http_insecure = os.getenv('GIT_HTTP_INSECURE', 'FALSE')
+    git_repo_url = os.getenv('GIT_REPO_URL')
+    git_clone_dest = os.getenv('GIT_CLONE_DEST')
+    git_repo_branch = os.getenv('GIT_REPO_BRANCH', 'main')
+    git_provider = os.getenv('GIT_PROVIDER')
+    git_ssh_id_file = os.getenv('GIT_SSH_ID_FILE')
+    git_repo_content_path = os.getenv('GIT_REPO_CONTENT_PATH')
+    git_preserve_src = os.getenv('GIT_PRESERVE_SRC', 'FALSE')
 
-    TARGET_DIR = os.getenv('TARGET_DIR')
-    TARGET_BASE_URL = os.getenv('TARGET_BASE_URL')
-    BUILD_PARAMS = os.getenv('BUILD_PARAMS', '')
-    PROJECT_TYPE = os.getenv('PROJECT_TYPE', 'hugo')
+    target_dir = os.getenv('TARGET_DIR')
+    target_base_url = os.getenv('TARGET_BASE_URL')
+    target_server_uri = os.getenv('TARGET_SERVER_URI')
+    build_params = os.getenv('BUILD_PARAMS', '')
+    project_type = os.getenv('PROJECT_TYPE', 'hugo')
+
+    home = os.getenv('HOME', '/home/app')
 
     ## GIT_MANY_BRANCHES is used to define if we deploy one (prod) or many (devs) branches
-    GIT_MANY_BRANCHES = os.getenv('GIT_MANY_BRANCHES', 'FALSE')
+    git_many_branches = os.getenv('GIT_MANY_BRANCHES', 'FALSE')
 
     # Determine schema
-    SCHEMA = "http" if GIT_HTTP_INSECURE == "TRUE" else "https"
+    schema = "http" if git_http_insecure == "TRUE" else "https"
 
     # Get the directory of the git clone destination
-    clone_dir = os.path.basename(GIT_CLONE_DEST)
+    clone_dir = os.path.basename(git_clone_dest)
     print(f"Working directory: {clone_dir}")
 
     # Handle cloning or pulling the repository based on transport method
-    if TRANSPORT == "SSH":
+    if transport == "SSH":
         print("Cloning/updating with SSH..")
         run_command(
-            ["git", "clone", GIT_REPO_URL, clone_dir],
-            env={"GIT_SSH_COMMAND": f"ssh -oStrictHostKeyChecking=no -i {GIT_SSH_ID_FILE}"}
+            ["git", "clone", git_repo_url, clone_dir],
+            env={"GIT_SSH_COMMAND": f"ssh -oStrictHostKeyChecking=no -i {git_ssh_id_file}"}
         )
-    elif TRANSPORT == "HTTP":
-        if GIT_PROVIDER in ("GITHUB", "GITEA", "GITLAB"):
+    elif transport == "HTTP":
+        if git_provider in ("GITHUB", "GITEA", "GITLAB"):
             print("Cloning/updating a private repo..")
-            repo_url = f"{SCHEMA}://{GIT_REPO_URL}"
+            repo_url = f"{schema}://{git_repo_url}"
             # Use credentials from $HOME/.git-credentials
             run_command(["git", "config", "--global", "credential.helper", "store"])
+
+            if shutil.which(f"{home}/git-credentials"):
+                shutil.copy2( f"{home}/git-credentials",  f"{home}/.git-credentials")
         else:
             print("Cloning/updating a public repo..")
-            repo_url = f"{SCHEMA}://{GIT_REPO_URL}"
+            repo_url = f"{schema}://{git_repo_url}"
 
-        git_command(repo_url, clone_dir, GIT_REPO_BRANCH)
+        git_command(repo_url, clone_dir, git_repo_branch)
     else:
         print("Unsupported transport!")
         exit(-1)
 
-    if PROJECT_TYPE == "hugo":
+    public_uri = f"{target_server_uri}{target_base_url}/{git_repo_branch}" if git_many_branches == "TRUE" else f"{target_server_uri}{target_base_url}"
+    if project_type == "hugo":
         # Build the site using Hugo
-        site_dir = f"{TARGET_DIR}/{GIT_REPO_BRANCH}" if GIT_MANY_BRANCHES == "TRUE" else TARGET_DIR
+        site_dir = f"{target_dir}/{git_repo_branch}" if git_many_branches == "TRUE" else target_dir
         os.makedirs(site_dir, exist_ok=True)
-        base_url = f"{TARGET_BASE_URL}/{GIT_REPO_BRANCH}" if GIT_MANY_BRANCHES == "TRUE" else TARGET_BASE_URL
-        run_command(
-            ["hugo", "--destination", site_dir, "--baseURL", base_url] + BUILD_PARAMS.split(' '),
-            cwd=os.path.join(clone_dir, GIT_REPO_CONTENT_PATH)
-        )
-    elif PROJECT_TYPE == "mkdocs":
+
+        hugo_cmd = ["hugo", "--destination", site_dir, "--baseURL", public_uri]
+        if len(build_params) > 0:
+            hugo_cmd += build_params.split(' ')
+
+        run_command(hugo_cmd, cwd=os.path.join(clone_dir, git_repo_content_path))
+    elif project_type == "mkdocs":
         # Build the site using mkdocs
-        site_dir = f"{TARGET_DIR}/{GIT_REPO_BRANCH}" if GIT_MANY_BRANCHES == "TRUE" else TARGET_DIR
+        site_dir = f"{target_dir}/{git_repo_branch}" if git_many_branches == "TRUE" else target_dir
         os.makedirs(site_dir, exist_ok=True)
-        run_command(
-            ["mkdocs", "build", "--site-dir", site_dir] + BUILD_PARAMS.split(' '),
-            cwd=os.path.join(clone_dir, GIT_REPO_CONTENT_PATH)
-        )
+
+        mkdocs_cmd = ["mkdocs", "build", "--site-dir", site_dir]
+        if len(build_params) > 0:
+            mkdocs_cmd += build_params.split(' ')
+
+        run_command(mkdocs_cmd, cwd=os.path.join(clone_dir, git_repo_content_path))
     else:
         print("Unsupported project type!")
         exit(-2)
 
     # Clean up the source directory if required
-    if GIT_PRESERVE_SRC == "FALSE":
+    if git_preserve_src == "FALSE":
         shutil.rmtree(clone_dir)
 
 
