@@ -21,7 +21,7 @@ def git_command(repo_url, clone_dir, branch):
     try:
         if not os.path.isdir(os.path.join(clone_dir, '.git')):
             # Clone repository
-            run_command(["git", "clone", "--depth", "1", repo_url, clone_dir])
+            run_command(["git", "clone", "--depth", "1", "--branch", branch, repo_url, clone_dir])
         else:
             # Pull repository if already exists
             run_command(["git", "fetch", "-v"], cwd=clone_dir)
