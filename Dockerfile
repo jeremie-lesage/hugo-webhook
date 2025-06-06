@@ -1,4 +1,4 @@
-FROM docker.io/library/alpine:3.20
+FROM docker.io/library/alpine:3.22
 
 ENV WEBHOOK_VERSION=2.8.1
 ENV MKDOCS_VERSION=1.6.1
