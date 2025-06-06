@@ -16,11 +16,13 @@ RUN addgroup -S app && \
     chown app:app /etc/webhook/  && \
     chmod 755 /etc/webhook/ && \
     apk add --update --no-cache \
+        tzdata \
         ca-certificates \
         go \
         bash \
         git \
         hugo \
+        npm \
         py3-regex \
         py3-pip \
         build-base && \

@@ -2,7 +2,9 @@
 import os
 import subprocess
 import shutil
+import argparse
 from matrix_client.api import MatrixHttpApi
+
 
 def run_command(command, cwd=None, env=None):
     """Run a shell command and return its output."""
@@ -30,6 +32,7 @@ def git_command(repo_url, clone_dir, branch):
         print(f"Git operation failed: {str(e)}")
         raise
 
+
 def send_matrix_message(message):
     matrix_server = os.getenv('MATRIX_SERVER', '')
     matrix_room = os.getenv('MATRIX_ROOM')
@@ -38,9 +41,11 @@ def send_matrix_message(message):
         print(f"Sending message to {matrix_server} @ {matrix_room}")
         matrix = MatrixHttpApi(matrix_server, token=matrix_token)
         response = matrix.send_message(matrix_room, message)
+        print("matrix response", response)
 
-def main():
-    print("Building site..")
+
+def main(action):
+    print("Pulling site..")
 
     # Environment variables (these should be set beforehand in your environment)
     transport = os.getenv('GIT_TRANSPORT', 'HTTP')
@@ -71,6 +76,20 @@ def main():
     clone_dir = os.path.basename(git_clone_dest)
     print(f"Working directory: {clone_dir}")
 
+    if action == "pull" or action == "all":
+        pull_site(clone_dir, git_provider, git_repo_branch, git_repo_url, git_ssh_id_file, home, schema, transport)
+
+    if action == "build" or action == "all":
+        public_uri = f"{target_server_uri}{target_base_url}/{git_repo_branch}" if git_many_branches == "TRUE" else f"{target_server_uri}{target_base_url}"
+        site_dir = f"{target_dir}/{git_repo_branch}" if git_many_branches == "TRUE" else target_dir
+        build_site(build_params, clone_dir, git_repo_content_path, project_type, public_uri, site_dir)
+
+    # Clean up the source directory if required
+    if git_preserve_src == "FALSE":
+        shutil.rmtree(clone_dir)
+
+
+def pull_site(clone_dir, git_provider, git_repo_branch, git_repo_url, git_ssh_id_file, home, schema, transport):
     # Handle cloning or pulling the repository based on transport method
     if transport == "SSH":
         print("Cloning/updating with SSH..")
@@ -86,7 +105,7 @@ def main():
             run_command(["git", "config", "--global", "credential.helper", "store"])
 
             if shutil.which(f"{home}/git-credentials"):
-                shutil.copy2( f"{home}/git-credentials",  f"{home}/.git-credentials")
+                shutil.copy2(f"{home}/git-credentials", f"{home}/.git-credentials")
         else:
             print("Cloning/updating a public repo..")
             repo_url = f"{schema}://{git_repo_url}"
@@ -96,13 +115,18 @@ def main():
         print("Unsupported transport!")
         exit(-1)
 
-    public_uri = f"{target_server_uri}{target_base_url}/{git_repo_branch}" if git_many_branches == "TRUE" else f"{target_server_uri}{target_base_url}"
+
+def build_site(build_params, clone_dir, git_repo_content_path, project_type, public_uri, site_dir):
+    print("Building site..")
     if project_type == "hugo":
         # Build the site using Hugo
-        site_dir = f"{target_dir}/{git_repo_branch}" if git_many_branches == "TRUE" else target_dir
         os.makedirs(site_dir, exist_ok=True)
 
-        hugo_cmd = ["hugo", "--destination", site_dir, "--baseURL", public_uri]
+        if os.path.isfile(os.path.join(clone_dir, git_repo_content_path, 'package.json')):
+            npm_cmd = ["npm", "install"]
+            run_command(npm_cmd, cwd=os.path.join(clone_dir, git_repo_content_path))
+
+        hugo_cmd = ["hugo", "--destination", site_dir, "--baseURL", public_uri, "--cleanDestinationDir", "--minify", "--noTimes"]
         if len(build_params) > 0:
             hugo_cmd += build_params.split(' ')
 
@@ -110,7 +134,6 @@ def main():
         send_matrix_message(f"Site Update {public_uri}")
     elif project_type == "mkdocs":
         # Build the site using mkdocs
-        site_dir = f"{target_dir}/{git_repo_branch}" if git_many_branches == "TRUE" else target_dir
         os.makedirs(site_dir, exist_ok=True)
 
         mkdocs_cmd = ["mkdocs", "build", "--site-dir", site_dir]
@@ -123,10 +146,10 @@ def main():
         print("Unsupported project type!")
         exit(-2)
 
-    # Clean up the source directory if required
-    if git_preserve_src == "FALSE":
-        shutil.rmtree(clone_dir)
-
 
 if __name__ == "__main__":
-    main()
+    parser = argparse.ArgumentParser(description="Script to pull and build static site")
+    parser.add_argument("action", type=str, help="pull, build or (all)", default="all")
+
+    args = parser.parse_args()
+    main(args.action)

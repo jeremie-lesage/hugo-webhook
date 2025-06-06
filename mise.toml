@@ -1,0 +1,6 @@
+[tools]
+python = "3.12"
+
+# https://mise.jdx.dev/lang/python.html
+[env]
+_.python.venv = { path = ".venv", create = true }
