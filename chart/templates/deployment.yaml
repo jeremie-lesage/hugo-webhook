@@ -188,7 +188,7 @@ spec:
             {{- if or (not (empty .Values.git.gitCredentials)) (not (empty .Values.git.existingGitCredentials)) }}
             - name: git-credentials
               readOnly: true
-              mountPath: /home/app/git-credentials
+              mountPath: /home/app/.git-credentials
               subPath: git-credentials
             {{ end }}
       {{- with .Values.nodeSelector }}
