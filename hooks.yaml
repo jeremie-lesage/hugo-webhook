@@ -1,8 +1,14 @@
 - id: refresh
   execute-command: "/var/scripts/refresh.py"
+  pass-arguments-to-command:
+    - source: "string"
+      name: "all"
   command-working-directory: "/tmp"
 - id: hugo
   execute-command: "/var/scripts/refresh.py"
+  pass-arguments-to-command:
+    - source: "string"
+      name: "all"
   command-working-directory: "/tmp"
   pass-environment-to-command:
       -  source: "string"
@@ -10,6 +16,9 @@
          name: "hugo"
 - id: mkdocs
   execute-command: "/var/scripts/refresh.py"
+  pass-arguments-to-command:
+    - source: "string"
+      name: "all"
   command-working-directory: "/tmp"
   pass-environment-to-command:
       -  source: "string"

@@ -53,7 +53,7 @@ spec:
         - name: "{{ .Chart.Name }}-init"
           image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: [ "/var/scripts/refresh.py" ]
+          command: [ "/var/scripts/refresh.py", "all" ]
           env:
             - name: GIT_PROVIDER
               value: "{{ .Values.git.provider }}"

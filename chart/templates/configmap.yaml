@@ -6,6 +6,9 @@ data:
   hooks.yaml: |-
     - id: refresh
       execute-command: "/var/scripts/refresh.py"
+      pass-arguments-to-command:
+        - source: "string"
+          name: "all"
       command-working-directory: "/tmp"
       trigger-rule:
         {{- if .Values.hooks.gitlabHook }}
@@ -35,6 +38,9 @@ data:
         {{ end }}
     - id: hugo
       execute-command: "/var/scripts/refresh.py"
+      pass-arguments-to-command:
+        - source: "string"
+          name: "all"
       command-working-directory: "/tmp"
       pass-environment-to-command:
         - source: "string"
@@ -74,6 +80,9 @@ data:
         {{ end }}
     - id: mkdocs
       execute-command: "/var/scripts/refresh.py"
+      pass-arguments-to-command:
+        - source: "string"
+          name: "all"
       command-working-directory: "/tmp"
       pass-environment-to-command:
         - source: "string"
