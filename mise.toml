@@ -1,4 +1,5 @@
 [tools]
+helm = "latest"
 python = "3.12"
 
 # https://mise.jdx.dev/lang/python.html

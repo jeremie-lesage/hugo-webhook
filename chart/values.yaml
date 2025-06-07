@@ -68,6 +68,9 @@ hooks:
   ## Comments to activate the deployment
   gitlabTriggerMessage: ""
 
+matrix:
+  server: https://matrix.org
+
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
