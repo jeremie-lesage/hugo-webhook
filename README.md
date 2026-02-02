@@ -61,6 +61,15 @@ version is 0.80.0.
 | `/etc/hooks.yaml` | The [webhook](https://github.com/adnanh/webhook) configuration file.                                           |
 | `/ssh/id_rsa`     | The private key used to communicate with the git repository over SSH (needs to have at least 400 permissions). |
 
+### GitLab Project Access Token
+
+To clone a project hosted on GitLab, you need to create a **Project access token** with the following settings:
+
+- **Role**: `Reporter`
+- **Scope**: `read_repository`
+
+When configuring authentication, use the **token name** as the username and the **token value** as the password.
+
 # Deployment examples
 
 ## Docker
@@ -93,12 +102,18 @@ curl http://localhost:9000/hooks/mkdocs
 Use this helm chart:
 
 ```
-docker tag jeci/hugo-webhook rg.fr-par.scw.cloud/jeci/hugo-webhook:0.1.0
-docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:0.1.0
-
 $ helm repo add jeci https://jeci.fr/helm-charts/
 $ helm install jeci/hugo-webhook --set -e GIT_PROVIDER=GITHUB \
   --set GIT_REPO_URL=github.com/username/hugo-site.git
 ```
 
-See [jfardello/hugo-webhook-chart](https://github.com/jfardello/hugo-webhook-chart). 
+See [jfardello/hugo-webhook-chart](https://github.com/jfardello/hugo-webhook-chart).
+
+
+## Build
+
+```
+docker build -t rg.fr-par.scw.cloud/jeci/hugo-webhook:0.8.0 .
+docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:0.8.0
+```
+
