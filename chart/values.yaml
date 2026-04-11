@@ -71,7 +71,17 @@ hooks:
   gitlabTriggerMessage: ""
 
 matrix:
+  ## Enable Matrix notifications on build success/failure
+  enabled: false
+  ## Matrix server URL
   server: https://matrix.org
+  ## Matrix room ID (ex. !roomid:matrix.org)
+  room: ""
+  ## Matrix access token
+  token: ""
+  ## Use an existing secret instead of creating one from room/token values
+  ## The secret must have keys "room" and "token"
+  existingSecret: ""
 
 imagePullSecrets: []
 nameOverride: ""
