@@ -75,8 +75,7 @@ def main(action):
     # Determine schema
     schema = "http" if git_http_insecure == "TRUE" else "https"
 
-    # Get the directory of the git clone destination
-    clone_dir = os.path.basename(git_clone_dest)
+    clone_dir = git_clone_dest
     print(f"Working directory: {clone_dir}")
 
     try:
