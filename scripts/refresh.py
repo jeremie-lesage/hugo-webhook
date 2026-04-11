@@ -109,7 +109,7 @@ def pull_site(clone_dir, git_provider, git_repo_branch, git_repo_url, git_ssh_id
             # Use credentials from $HOME/.git-credentials
             run_command(["git", "config", "--global", "credential.helper", "store"])
 
-            if shutil.which(f"{home}/git-credentials"):
+            if os.path.isfile(f"{home}/git-credentials"):
                 shutil.copy2(f"{home}/git-credentials", f"{home}/.git-credentials")
         else:
             print("Cloning/updating a public repo..")
