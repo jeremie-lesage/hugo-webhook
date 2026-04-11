@@ -1,7 +1,7 @@
 FROM docker.io/library/alpine:3.22
 
 ENV HUGO_VER=0.145.0
-ENV WEBHOOK_VERSION=2.8.2
+ENV WEBHOOK_VERSION=2.8.3
 ENV MKDOCS_VERSION=1.6.1
 
 # Configuration variables
