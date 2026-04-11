@@ -54,9 +54,9 @@ version is 0.145.0.
 | `TARGET_BASE_URL`       | https://my-server.app                                                                               |
 | `BUILD_PARAMS`          | Additional HUGO/MKDOCS parameter (e.g., `--minify --gc`).                                           |
 | `BUILD_TIMEOUT`         | Timeout in seconds for each command (git clone, build, etc.), defaults to 120                        |
-| `MATRIX_SERVER`         | Matrix server (ex. https://matrix.org)                                                              |
-| `MATRIX_ROOM`           | Room to write to (ex. !roomid:matrix.org)                                                           |
-| `MATRIX_TOKEN`          | Token use to connect to matrix server                                                               |
+| `MATRIX_SERVER`         | Matrix server (ex. https://matrix.org). Optional.                                                   |
+| `MATRIX_ROOM`           | Room to write to (ex. !roomid:matrix.org). Optional.                                                |
+| `MATRIX_TOKEN`          | Token use to connect to matrix server. Optional.                                                    |
 
 ### Volumes and configuration files
 
@@ -113,6 +113,26 @@ $ helm install jeci/hugo-webhook --set -e GIT_PROVIDER=GITHUB \
 ```
 
 See [jfardello/hugo-webhook-chart](https://github.com/jfardello/hugo-webhook-chart).
+
+### Matrix notifications (Helm)
+
+Matrix notifications are disabled by default. To enable them in the Helm chart:
+
+```yaml
+matrix:
+  enabled: true
+  server: https://matrix.org
+  room: "!roomid:matrix.org"
+  token: "your-access-token"
+```
+
+To use an existing Kubernetes secret (must have `room` and `token` keys):
+
+```yaml
+matrix:
+  enabled: true
+  existingSecret: "my-matrix-secret"
+```
 
 
 ## Build
