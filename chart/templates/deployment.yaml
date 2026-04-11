@@ -81,6 +81,8 @@ spec:
               value: "{{ .Values.git.projectType }}"
             - name: GIT_MANY_BRANCHES
               value: "{{ .Values.git.manyBranches }}"
+            - name: BUILD_TIMEOUT
+              value: "{{ .Values.target.buildTimeout }}"
             - name: MATRIX_SERVER
               value: "{{ .Values.matrix.server }}"
             - name: MATRIX_ROOM
@@ -172,6 +174,8 @@ spec:
               value: "{{ .Values.target.serverUri }}"
             - name: BUILD_PARAMS
               value: "{{ .Values.target.params }}"
+            - name: BUILD_TIMEOUT
+              value: "{{ .Values.target.buildTimeout }}"
             - name: MATRIX_SERVER
               value: "{{ .Values.matrix.server }}"
             - name: MATRIX_ROOM

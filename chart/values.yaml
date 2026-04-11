@@ -53,6 +53,8 @@ target:
   baseDir: /srv/static
   ## Extra params passed to the hugo/mkdocs build.
   params: ""
+  ## Timeout in seconds for each command (git clone, hugo build, etc.)
+  buildTimeout: "120"
 
 hooks:
   ## url prefix to use for served hooks (protocol://yourserver:port/PREFIX/:hook-id)

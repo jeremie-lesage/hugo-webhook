@@ -6,10 +6,13 @@ import argparse
 from matrix_client.api import MatrixHttpApi
 
 
+BUILD_TIMEOUT = int(os.getenv('BUILD_TIMEOUT', '120'))
+
+
 def run_command(command, cwd=None, env=None):
     """Run a shell command and return its output."""
     try:
-        subprocess.run(command, cwd=cwd, check=True, timeout=60, env=env)
+        subprocess.run(command, cwd=cwd, check=True, timeout=BUILD_TIMEOUT, env=env)
     except subprocess.TimeoutExpired as e:
         print(f"Process timed out.\n{e}")
         raise
