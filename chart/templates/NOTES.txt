@@ -5,23 +5,17 @@
   Access the site at:
   http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}
 
-  You can force an hugo build with:
-  curl http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}/hooks/refresh-{{ include "hugo-webhook.randnum" . }}
+  You can force a build with:
+  curl http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}/{{ .Values.hooks.urlPrefix }}/refresh
 {{- end }}
 {{- else }}
 
-  
-
   Access the built site:
-  $ kubectl port-forward svc/docs-hugo-webhook 8080:8080 -n {{ .Release.Namespace }}
+  $ kubectl port-forward svc/{{ include "hugo-webhook.fullname" . }} {{ .Values.service.port }}:{{ .Values.service.port }} -n {{ .Release.Namespace }}
+  $ open http://localhost:{{ .Values.service.port }}
 
-  $ http://localhost:8080
+  You can force a build with:
+  $ kubectl port-forward svc/{{ include "hugo-webhook.fullname" . }} {{ .Values.service.hookPort }}:{{ .Values.service.hookPort }} -n {{ .Release.Namespace }}
+  $ curl http://localhost:{{ .Values.service.hookPort }}/{{ .Values.hooks.urlPrefix }}/refresh
 
-  You can force an hugo build with:
-  
-  $ kubectl port-forward svc/docs-hugo-webhook 9000:9000 -n {{ .Release.Namespace }}
-
-  $ curl localhost:8080/hooks/refresh-{{ include "hugo-webhook.randnum" . }}
-
-  
 {{- end }}
