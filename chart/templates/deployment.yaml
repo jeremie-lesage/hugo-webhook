@@ -142,7 +142,7 @@ spec:
           image: "{{ .Values.image.hookRepository }}:{{ .Values.image.hookRepositoryVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
-            - "/home/app/go/bin/webhook"
+            - "/usr/local/bin/webhook"
           args:
             - "-verbose"
             - "-urlprefix"
