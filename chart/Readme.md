@@ -63,7 +63,7 @@ The following table lists the configurable parameters of the Hugo-webhook chart 
 |-----------------------------------|---------------------------------------------------------------------------------------------|-------------------------------------------|
 | `replicaCount`                    |                                                                                             | `1`                                       |
 | `image.nginxRepository`           | Nginx image                                                                                 | `"nginx"`                                 |
-| `image.nginxVersion`              | Image tag for the nginx image                                                               | `"latest"`                                |
+| `image.nginxVersion`              | Image tag for the nginx image                                                               | `"1.28-alpine"`                           |
 | `image.hookRepository`            | Webhook docker file                                                                         | `"rg.fr-par.scw.cloud/jeci/hugo-webhook"` |
 | `image.hookRepositoryVersion`     | Image tag for the webhook image                                                             | `"0.4.6"`                                 |
 | `image.pullPolicy`                |                                                                                             | `"IfNotPresent"`                          |

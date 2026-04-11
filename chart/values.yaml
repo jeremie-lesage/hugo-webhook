@@ -4,7 +4,7 @@ image:
   ## Nginx image
   nginxRepository: nginx
   ## image tag for the nginx image
-  nginxVersion: latest
+  nginxVersion: 1.28-alpine
   ## webhook docker file
   hookRepository: rg.fr-par.scw.cloud/jeci/hugo-webhook
   ## image tag for the webhook image
