@@ -1,7 +1,18 @@
-FROM docker.io/library/alpine:3.22
+FROM docker.io/library/alpine:3.22 AS builder
 
 ENV HUGO_VER=0.145.0
 ENV WEBHOOK_VERSION=2.8.3
+ENV HOME=/home/builder
+
+RUN apk add --update --no-cache go build-base git
+
+RUN --mount=type=cache,target=$HOME/go/pkg/mod \
+    --mount=type=cache,target=$HOME/.cache/go-build \
+    go install github.com/adnanh/webhook@${WEBHOOK_VERSION} && \
+    CGO_ENABLED=1 go install -tags extended github.com/gohugoio/hugo@v${HUGO_VER}
+
+FROM docker.io/library/alpine:3.22
+
 ENV MKDOCS_VERSION=1.6.1
 
 # Configuration variables
@@ -19,13 +30,11 @@ RUN addgroup -S app && \
     apk add --update --no-cache \
         tzdata \
         ca-certificates \
-        go \
         bash \
         git \
         npm \
         py3-regex \
-        py3-pip \
-        build-base && \
+        py3-pip && \
     update-ca-certificates && \
     pip install --break-system-packages \
                 mkdocs==${MKDOCS_VERSION} \
@@ -36,14 +45,10 @@ RUN addgroup -S app && \
                 mkdocs-material-extensions \
                 matrix_client
 
-ENV HOME=/home/app
+COPY --from=builder /home/builder/go/bin/webhook /usr/local/bin/
+COPY --from=builder /home/builder/go/bin/hugo /usr/local/bin/
 
-RUN --mount=type=cache,target=$HOME/go/pkg/mod \
-    --mount=type=cache,target=$HOME/.cache/go-build \
-    go install github.com/adnanh/webhook@${WEBHOOK_VERSION} && \
-    mv /home/app/go/bin/webhook /usr/local/bin/ && \
-    CGO_ENABLED=1 go install -tags extended github.com/gohugoio/hugo@v${HUGO_VER} && \
-    mv /home/app/go/bin/hugo /usr/local/bin/
+ENV HOME=/home/app
 
 USER app
 
