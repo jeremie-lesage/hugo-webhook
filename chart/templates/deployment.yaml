@@ -81,6 +81,18 @@ spec:
               value: "{{ .Values.git.projectType }}"
             - name: GIT_MANY_BRANCHES
               value: "{{ .Values.git.manyBranches }}"
+            - name: MATRIX_SERVER
+              value: "{{ .Values.matrix.server }}"
+            - name: MATRIX_ROOM
+              valueFrom:
+                secretKeyRef:
+                  name: matrix-token
+                  key: room
+            - name: MATRIX_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: matrix-token
+                  key: token
           volumeMounts:
             - name: html
               mountPath: "{{ .Values.ephemeral.mountTo}}"
