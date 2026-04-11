@@ -178,6 +178,8 @@ spec:
               value: "{{ .Values.target.params }}"
             - name: BUILD_TIMEOUT
               value: "{{ .Values.target.buildTimeout }}"
+            - name: GIT_MANY_BRANCHES
+              value: "{{ .Values.git.manyBranches }}"
             {{- if .Values.matrix.enabled }}
             - name: MATRIX_SERVER
               value: "{{ .Values.matrix.server }}"
