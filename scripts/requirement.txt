@@ -1,3 +1,0 @@
-matrix_client
-retry2
-pygit2
