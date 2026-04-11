@@ -3,4 +3,4 @@ name: hugo-webhook
 description: Deploys a webhook that builds Hugo (or mkdocs) sites from git sources.
 type: application
 version: 0.9.0
-appVersion: 0.7.3
+appVersion: 0.9.0
