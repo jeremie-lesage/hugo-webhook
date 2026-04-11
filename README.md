@@ -22,7 +22,9 @@ started.
 The container exposed a webhook listener on port 9000. A refresh of the site can be triggered with:
 
 ```bash
-curl http://localhost:9000/hooks/refresh
+curl http://localhost:9000/hooks/refresh   # auto-detect project type
+curl http://localhost:9000/hooks/hugo      # force Hugo build
+curl http://localhost:9000/hooks/mkdocs    # force MkDocs build
 ```
 
 The *hugo target directory* should be mounted by a static webserver (such as nginx) and served.
@@ -31,13 +33,13 @@ See the Kubernetes deployment example for a fully working deployment.
 ## Configuration
 
 The container is configured through environment variables and some configuration files. The Hugo
-version is 0.80.0.
+version is 0.145.0.
 
 ### Environment variables
 
 | Name                    | Description                                                                                         |
 |-------------------------|-----------------------------------------------------------------------------------------------------|
-| `GIT_PROVIDER`          | Your git provider (GITHUB                                                                           |GITEA|GITLAB), defaults to GITHUB, only used if TRANSPORT is HTTP.       |
+| `GIT_PROVIDER`          | Your git provider (GITHUB\|GITEA\|GITLAB\|PUBLIC), defaults to GITHUB, only used if TRANSPORT is HTTP. |
 | `GIT_TRANSPORT`         | Whether to use SSH or HTTP git transport, defaults to HTTP.                                         |
 | `GIT_HTTP_INSECURE`     | Force clear http as transport. (A nasty thing, you know what you're doing).                         |
 | `GIT_REPO_URL`          | The URL of the git repository.                                                                      |
@@ -45,10 +47,13 @@ version is 0.80.0.
 | `GIT_REPO_BRANCH`       | The branch of the git repository.                                                                   |
 | `GIT_CLONE_DEST`        | Where to clone the repo to, defaults to /srv/src                                                    |
 | `GIT_PRESERVE_SRC`      | Whether to preserve(cache) the src upon build or not. "TRUE" or "FALSE", default to FALSE           |
+| `GIT_MANY_BRANCHES`     | Deploy one branch (prod) or many branches (dev). "TRUE" or "FALSE", defaults to FALSE               |
+| `PROJECT_TYPE`          | Build engine to use: `hugo` or `mkdocs`, defaults to `hugo`                                         |
 | `TARGET_DIR`            | Where to save hugo's built html, defaults to /srv/static                                            |
 | `TARGET_SERVER_URI`     | /app                                                                                                |
 | `TARGET_BASE_URL`       | https://my-server.app                                                                               |
 | `BUILD_PARAMS`          | Additional HUGO/MKDOCS parameter (e.g., `--minify --gc`).                                           |
+| `BUILD_TIMEOUT`         | Timeout in seconds for each command (git clone, build, etc.), defaults to 120                        |
 | `MATRIX_SERVER`         | Matrix server (ex. https://matrix.org)                                                              |
 | `MATRIX_ROOM`           | Room to write to (ex. !roomid:matrix.org)                                                           |
 | `MATRIX_TOKEN`          | Token use to connect to matrix server                                                               |
@@ -94,7 +99,7 @@ git repository url *should not* have the schema, ex: github.com/user/repo.git
 This will run the container locally. A refresh can be triggered with
 
 ```bash
-curl http://localhost:9000/hooks/mkdocs
+curl http://localhost:9000/hooks/mkdocs    # force MkDocs build
 ```
 
 ## Kubernetes
@@ -113,7 +118,7 @@ See [jfardello/hugo-webhook-chart](https://github.com/jfardello/hugo-webhook-cha
 ## Build
 
 ```
-docker build -t rg.fr-par.scw.cloud/jeci/hugo-webhook:0.8.0 .
-docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:0.8.0
+docker build -t rg.fr-par.scw.cloud/jeci/hugo-webhook:0.9.0 .
+docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:0.9.0
 ```
 
