@@ -34,17 +34,15 @@ Sample config for a traefik ingres:
 git:
   provider: "GITEA"
   transport: "HTTP"
-  token: "sampletoken-aaaabbbbccc"
-  username: "jfardello"
+  gitCredentials: "https://user:token@git.domain.tld"
   repoUrl: git.domain.tld/foouser/foo-docs
   repoContentPath: "ktdocs"
   repoBranch: "master"
   cloneDest: "/srv/src"
-  target_dir: "/srv/static"
   preserveSrc: "TRUE"
 
-hugo:
-  params: --minify
+target:
+  params: "--minify"
 
 ingress:
   enabled: true
@@ -67,11 +65,11 @@ The following table lists the configurable parameters of the Hugo-webhook chart 
 | `image.nginxRepository`           | Nginx image                                                                                 | `"nginx"`                                 |
 | `image.nginxVersion`              | Image tag for the nginx image                                                               | `"latest"`                                |
 | `image.hookRepository`            | Webhook docker file                                                                         | `"rg.fr-par.scw.cloud/jeci/hugo-webhook"` |
-| `image.hookRepositoryVersion`     | Image tag for the webhook image                                                             | `"0.3.1"`                                 |
+| `image.hookRepositoryVersion`     | Image tag for the webhook image                                                             | `"0.4.6"`                                 |
 | `image.pullPolicy`                |                                                                                             | `"IfNotPresent"`                          |
 | `git.sshPrivateKey`               | The ssh private key in order to git pull/clone when using ssh transport                     | `""`                                      |
 | `git.existingSshPrivateKeySecret` | When it's set, the sshPrivateKey parameter is ignored                                       | `""`                                      |
-| `git.provider`                    | When using http transport, the git provider, github, gitlab, or gitea.                      | `"GITHUB"`                                |
+| `git.provider`                    | When using http transport, the git provider: GITHUB, GITLAB, GITEA, or PUBLIC.              | `"PUBLIC"`                                |
 | `git.transport`                   | Http or ssh                                                                                 | `"HTTP"`                                  |
 | `git.gitCredentials`              | This is the ~/.git-credentials file as describe in  https://git-scm.com/docs/gitcredentials | `""`                                      |
 | `git.existingGitCredentials`      | When it's set, the gitCredentials parameter is ignored                                      | `""`                                      |
@@ -86,7 +84,20 @@ The following table lists the configurable parameters of the Hugo-webhook chart 
 | `ephemeral.mountTo`               | Where to mount the ephemeral hostpath.                                                      | `"/srv"`                                  |
 | `target.baseUrl`                  | Base Url of the target site.                                                                | `"/"`                                     |
 | `target.baseDir`                  | Destination of the html site (plus baseUrl for mkDocs).                                     | `"/srv/static"`                           |
+| `target.serverUri`                | Public URI (without leading slash).                                                         | `"https://localhost"`                     |
 | `target.params`                   | Extra params passed to the hugo or mkdocs build.                                            | `""`                                      |
+| `target.buildTimeout`             | Timeout in seconds for each command (git clone, build, etc.).                               | `"120"`                                   |
+| `hooks.urlPrefix`                 | URL prefix for served hooks.                                                                | `"hooks"`                                 |
+| `hooks.configFile`                | Path to the hooks configuration file.                                                       | `"/etc/webhook/hooks.yaml"`               |
+| `hooks.gitlabHook`                | Enable GitLab webhook trigger rules.                                                        | `false`                                   |
+| `hooks.gitlabToken`               | Secret token for X-Gitlab-Token header validation.                                          | `""`                                      |
+| `hooks.gitlabProjectId`           | GitLab project ID to match (must be int).                                                   | `nil`                                     |
+| `hooks.gitlabTriggerMessage`      | Comment text to activate the deployment.                                                    | `""`                                      |
+| `matrix.enabled`                  | Enable Matrix notifications on build success/failure.                                       | `false`                                   |
+| `matrix.server`                   | Matrix server URL.                                                                          | `"https://matrix.org"`                    |
+| `matrix.room`                     | Matrix room ID.                                                                             | `""`                                      |
+| `matrix.token`                    | Matrix access token.                                                                        | `""`                                      |
+| `matrix.existingSecret`           | Use an existing secret (must have `room` and `token` keys).                                 | `""`                                      |
 | `imagePullSecrets`                |                                                                                             | `[]`                                      |
 | `nameOverride`                    |                                                                                             | `""`                                      |
 | `fullnameOverride`                |                                                                                             | `""`                                      |
