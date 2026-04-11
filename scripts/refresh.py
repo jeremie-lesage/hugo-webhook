@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import os
 import subprocess
+import shlex
 import shutil
 import argparse
 from matrix_client.api import MatrixHttpApi
@@ -131,7 +132,7 @@ def build_site(build_params, clone_dir, git_repo_content_path, project_type, pub
 
         hugo_cmd = ["hugo", "--destination", site_dir, "--baseURL", public_uri, "--cleanDestinationDir", "--minify", "--noTimes"]
         if len(build_params) > 0:
-            hugo_cmd += build_params.split(' ')
+            hugo_cmd += shlex.split(build_params)
 
         run_command(hugo_cmd, cwd=os.path.join(clone_dir, git_repo_content_path))
         send_matrix_message(f"Site Update {public_uri}")
@@ -141,7 +142,7 @@ def build_site(build_params, clone_dir, git_repo_content_path, project_type, pub
 
         mkdocs_cmd = ["mkdocs", "build", "--site-dir", site_dir]
         if len(build_params) > 0:
-            mkdocs_cmd += build_params.split(' ')
+            mkdocs_cmd += shlex.split(build_params)
 
         run_command(mkdocs_cmd, cwd=os.path.join(clone_dir, git_repo_content_path))
         send_matrix_message(f"Site Update {public_uri}")
