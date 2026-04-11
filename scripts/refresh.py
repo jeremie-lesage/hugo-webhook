@@ -76,14 +76,17 @@ def main(action):
     clone_dir = os.path.basename(git_clone_dest)
     print(f"Working directory: {clone_dir}")
 
-    if action == "pull" or action == "all":
-        pull_site(clone_dir, git_provider, git_repo_branch, git_repo_url, git_ssh_id_file, home, schema, transport)
+    try:
+        if action == "pull" or action == "all":
+            pull_site(clone_dir, git_provider, git_repo_branch, git_repo_url, git_ssh_id_file, home, schema, transport)
 
-    if action == "build" or action == "all":
-        public_uri = f"{target_server_uri}{target_base_url}/{git_repo_branch}" if git_many_branches == "TRUE" else f"{target_server_uri}{target_base_url}"
-        site_dir = f"{target_dir}/{git_repo_branch}" if git_many_branches == "TRUE" else target_dir
-        build_site(build_params, clone_dir, git_repo_content_path, project_type, public_uri, site_dir)
+        if action == "build" or action == "all":
+            public_uri = f"{target_server_uri}{target_base_url}/{git_repo_branch}" if git_many_branches == "TRUE" else f"{target_server_uri}{target_base_url}"
+            site_dir = f"{target_dir}/{git_repo_branch}" if git_many_branches == "TRUE" else target_dir
+            build_site(build_params, clone_dir, git_repo_content_path, project_type, public_uri, site_dir)
 
+    except Exception as e:
+        send_matrix_message(f"Fail {git_repo_url} : {e}")
     # Clean up the source directory if required
     if git_preserve_src == "FALSE":
         shutil.rmtree(clone_dir)
@@ -153,3 +156,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
     main(args.action)
+
