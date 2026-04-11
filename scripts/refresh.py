@@ -21,16 +21,16 @@ def run_command(command, cwd=None, env=None):
         raise
 
 
-def git_command(repo_url, clone_dir, branch):
+def git_command(repo_url, clone_dir, branch, env=None):
     """Clones or pulls a git repository."""
     try:
         if not os.path.isdir(os.path.join(clone_dir, '.git')):
             # Clone repository
-            run_command(["git", "clone", "--depth", "1", "--branch", branch, repo_url, clone_dir])
+            run_command(["git", "clone", "--depth", "1", "--branch", branch, repo_url, clone_dir], env=env)
         else:
             # Pull repository if already exists
-            run_command(["git", "fetch", "-v"], cwd=clone_dir)
-            run_command(["git", "reset", "--hard", f"origin/{branch}"], cwd=clone_dir)
+            run_command(["git", "fetch", "-v"], cwd=clone_dir, env=env)
+            run_command(["git", "reset", "--hard", f"origin/{branch}"], cwd=clone_dir, env=env)
     except Exception as e:
         print(f"Git operation failed: {str(e)}")
         raise
@@ -98,10 +98,8 @@ def pull_site(clone_dir, git_provider, git_repo_branch, git_repo_url, git_ssh_id
     # Handle cloning or pulling the repository based on transport method
     if transport == "SSH":
         print("Cloning/updating with SSH..")
-        run_command(
-            ["git", "clone", git_repo_url, clone_dir],
-            env={"GIT_SSH_COMMAND": f"ssh -oStrictHostKeyChecking=no -i {git_ssh_id_file}"}
-        )
+        ssh_env = {"GIT_SSH_COMMAND": f"ssh -oStrictHostKeyChecking=no -i {git_ssh_id_file}"}
+        git_command(git_repo_url, clone_dir, git_repo_branch, env=ssh_env)
     elif transport == "HTTP":
         if git_provider in ("GITHUB", "GITEA", "GITLAB"):
             print("Cloning/updating a private repo..")
