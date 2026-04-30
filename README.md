@@ -9,17 +9,17 @@ Some features:
 
 * Web tokens: it is a lot easier to pass tokens as arguments to the chart than passing certificates.
 * It doesn't make use of supervisord
-* Smaller: it now uses the alpine docker image, webhook and hugo binaries have been compressed
-  with UPX and thus the image is pretty small.
+* Smaller: it uses a multi-stage Alpine docker image.
 * It doesn't run as root.
 * Can cache sources for faster pulling.
+* Supports [Hugo Modules](https://gohugo.io/hugo-modules/) (Go runtime included).
 
 The container is meant to operate as a webhook consumer to trigger a rebuild of a
-[Hugo](https://http://gohugo.io) static website. This can be used to automatically refresh a
+[Hugo](https://gohugo.io) static website. This can be used to automatically refresh a
 static website after a git commit. A refresh is always triggered when the container is
 started.
 
-The container exposed a webhook listener on port 9000. A refresh of the site can be triggered with:
+The container exposes a webhook listener on port 9000. A refresh of the site can be triggered with:
 
 ```bash
 curl http://localhost:9000/hooks/refresh   # auto-detect project type
@@ -138,7 +138,7 @@ matrix:
 ## Build
 
 ```
-docker build -t rg.fr-par.scw.cloud/jeci/hugo-webhook:1.0.0 .
-docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:1.0.0
+docker build -t rg.fr-par.scw.cloud/jeci/hugo-webhook:1.0.1 .
+docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:1.0.1
 ```
 
