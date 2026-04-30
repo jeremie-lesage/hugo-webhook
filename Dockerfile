@@ -32,6 +32,7 @@ RUN addgroup -S app && \
         ca-certificates \
         bash \
         git \
+        go \
         npm \
         py3-regex \
         py3-pip && \
@@ -49,6 +50,7 @@ COPY --from=builder /home/builder/go/bin/webhook /usr/local/bin/
 COPY --from=builder /home/builder/go/bin/hugo /usr/local/bin/
 
 ENV HOME=/home/app
+ENV PYTHONUNBUFFERED=1
 
 USER app
 
