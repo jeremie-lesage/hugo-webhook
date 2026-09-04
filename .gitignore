@@ -23,3 +23,8 @@ go.work
 
 .venv
 /output
+venv
+*.tgz
+__pycache__/
+*.pyc
+.idea/
