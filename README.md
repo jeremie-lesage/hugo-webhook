@@ -54,9 +54,28 @@ version is 0.145.0.
 | `TARGET_BASE_URL`       | https://my-server.app                                                                               |
 | `BUILD_PARAMS`          | Additional HUGO/MKDOCS parameter (e.g., `--minify --gc`).                                           |
 | `BUILD_TIMEOUT`         | Timeout in seconds for each command (git clone, build, etc.), defaults to 120                        |
+| `GIT_RETRY_ATTEMPTS`    | Number of attempts for the git clone/fetch before giving up, defaults to 3                          |
+| `GIT_RETRY_DELAY`       | Seconds before the first retry, doubled at each further attempt, defaults to 10                     |
 | `MATRIX_SERVER`         | Matrix server (ex. https://matrix.org). Optional.                                                   |
 | `MATRIX_ROOM`           | Room to write to (ex. !roomid:matrix.org). Optional.                                                |
 | `MATRIX_TOKEN`          | Token use to connect to matrix server. Optional.                                                    |
+
+### Failure behaviour
+
+A git clone/fetch that fails is retried `GIT_RETRY_ATTEMPTS` times, waiting
+`GIT_RETRY_DELAY` seconds before the first retry and doubling that delay at each
+further attempt. This absorbs transient network faults, which are the common case
+for a self-hosted git server.
+
+Once the attempts are exhausted, `refresh.py` sends the Matrix notification and
+**exits non-zero**. This matters for the initContainer: a non-zero exit leaves the
+pod in `Init:Error` instead of starting nginx on an empty `/srv/static`, where it
+would answer 403 while reporting itself Ready. A visible failure is preferred over
+a site that is silently broken.
+
+Budget accordingly: a blackholed TCP connection takes about 130 s to time out in
+the kernel, so `BUILD_TIMEOUT` must leave room for it, and the worst case is
+roughly `GIT_RETRY_ATTEMPTS` times that plus the accumulated delays.
 
 ### Volumes and configuration files
 

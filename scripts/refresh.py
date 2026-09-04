@@ -3,11 +3,14 @@ import os
 import subprocess
 import shlex
 import shutil
+import time
 import argparse
 from matrix_client.api import MatrixHttpApi
 
 
 BUILD_TIMEOUT = int(os.getenv('BUILD_TIMEOUT', '120'))
+GIT_RETRY_ATTEMPTS = int(os.getenv('GIT_RETRY_ATTEMPTS', '3'))
+GIT_RETRY_DELAY = int(os.getenv('GIT_RETRY_DELAY', '10'))
 
 
 def run_command(command, cwd=None, env=None):
@@ -24,17 +27,24 @@ def run_command(command, cwd=None, env=None):
 
 def git_command(repo_url, clone_dir, branch, env=None):
     """Clones or pulls a git repository."""
-    try:
-        if not os.path.isdir(os.path.join(clone_dir, '.git')):
-            # Clone repository
-            run_command(["git", "clone", "--depth", "1", "--branch", branch, repo_url, clone_dir], env=env)
-        else:
-            # Pull repository if already exists
-            run_command(["git", "fetch", "-v"], cwd=clone_dir, env=env)
-            run_command(["git", "reset", "--hard", f"origin/{branch}"], cwd=clone_dir, env=env)
-    except Exception as e:
-        print(f"Git operation failed: {str(e)}")
-        raise
+    delay = GIT_RETRY_DELAY
+    for attempt in range(1, GIT_RETRY_ATTEMPTS + 1):
+        try:
+            if not os.path.isdir(os.path.join(clone_dir, '.git')):
+                # Clone repository
+                run_command(["git", "clone", "--depth", "1", "--branch", branch, repo_url, clone_dir], env=env)
+            else:
+                # Pull repository if already exists
+                run_command(["git", "fetch", "-v"], cwd=clone_dir, env=env)
+                run_command(["git", "reset", "--hard", f"origin/{branch}"], cwd=clone_dir, env=env)
+            return
+        except Exception as e:
+            print(f"Git operation failed (attempt {attempt}/{GIT_RETRY_ATTEMPTS}): {str(e)}")
+            if attempt == GIT_RETRY_ATTEMPTS:
+                raise
+            print(f"Retrying in {delay}s..")
+            time.sleep(delay)
+            delay *= 2
 
 
 def send_matrix_message(message):
@@ -90,9 +100,11 @@ def main(action):
 
     except Exception as e:
         send_matrix_message(f"Fail {git_repo_url} : {e}")
-    # Clean up the source directory if required
-    if git_preserve_src == "FALSE":
-        shutil.rmtree(clone_dir)
+        raise
+    finally:
+        # Clean up the source directory if required
+        if git_preserve_src == "FALSE":
+            shutil.rmtree(clone_dir, ignore_errors=True)
 
 
 def pull_site(clone_dir, git_provider, git_repo_branch, git_repo_url, git_ssh_id_file, home, schema, transport):
