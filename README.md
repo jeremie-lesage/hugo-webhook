@@ -157,7 +157,7 @@ matrix:
 ## Build
 
 ```
-docker build -t rg.fr-par.scw.cloud/jeci/hugo-webhook:1.0.1 .
-docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:1.0.1
+docker build -t rg.fr-par.scw.cloud/jeci/hugo-webhook:1.0.2 .
+docker push rg.fr-par.scw.cloud/jeci/hugo-webhook:1.0.2
 ```
 
